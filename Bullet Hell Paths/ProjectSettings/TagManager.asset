@@ -14,7 +14,7 @@ TagManager:
   - 
   - 
   - ground
-  - 
+  - enemy
   - 
   - 
   - 
@@ -40,4 +40,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: hud
+    uniqueID: 3061636177
     locked: 0
