@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - laser
   layers:
   - Default
   - TransparentFX
@@ -41,6 +42,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: bossAttacks
+    uniqueID: 4205758979
+    locked: 0
   - name: hud
     uniqueID: 3061636177
+    locked: 0
+  - name: enemy
+    uniqueID: 2068189971
+    locked: 0
+  - name: terrain
+    uniqueID: 2136510259
     locked: 0
