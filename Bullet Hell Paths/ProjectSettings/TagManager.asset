@@ -6,6 +6,23 @@ TagManager:
   tags:
   - laser
   - kneeLaser
+  - pelletParent
+  - pellet_0
+  - pellet_1
+  - pellet_2
+  - pellet_3
+  - pellet_4
+  - pellet_5
+  - pellet_6
+  - pellet_7
+  - pellet_8
+  - pellet_9
+  - pellet_10
+  - pellet_11
+  - pellet_12
+  - pellet_13
+  - pellet_14
+  - pellet_15
   layers:
   - Default
   - TransparentFX
