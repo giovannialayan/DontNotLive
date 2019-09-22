@@ -97,7 +97,7 @@ public class playerController : MonoBehaviour
         }
 
         //jump
-        if (Input.GetKeyDown("space") && isGrounded && !Input.GetKey("s"))
+        if (Input.GetKeyDown("space") && isGrounded)
         {
             rigid.velocity = new Vector2(rigid.velocity.x, jumpSpeed);
             if (!isPlaying("lizy attack jump") && rigid.velocity.y >= 0)

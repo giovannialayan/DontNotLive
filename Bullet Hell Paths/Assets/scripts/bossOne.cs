@@ -21,6 +21,14 @@ public class bossOne : MonoBehaviour
     public float laserSize = .2f;
     private GameObject[] lasers;
 
+    //knee laser variables
+    public Transform kneeLaserParent;
+    private GameObject[] kneeLasers;
+    public float kneeLaserSpeed = 5f;
+    private Vector3 kneeLaserStartPos = new Vector3(10, -3.5f);
+    private Vector3 kneeLaserEndPos = new Vector3(-30, -3.5f);
+    private float journey;
+
     //pattern variables
     private bool isPatternOne = false;
     private bool isPatternTwo = false;
@@ -29,16 +37,32 @@ public class bossOne : MonoBehaviour
     {
         bossSprite = GetComponent<SpriteRenderer>();
         bossTransform = GetComponent<Transform>();
-        patternOne();
+        patternTwo();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         //make knee cap pattern work
         if (isPatternTwo)
         {
-
+            if (kneeLaserParent.position.x > kneeLaserEndPos.x)
+            {
+                kneeLaserParent.position = Vector3.MoveTowards(kneeLaserParent.position, kneeLaserEndPos, kneeLaserSpeed * Time.fixedDeltaTime);
+            }
+            else if(kneeLaserParent.position.x <= kneeLaserEndPos.x)
+            {
+                kneeLaserParent.position = Vector3.MoveTowards(kneeLaserParent.position, new Vector3(-30, -5), 1 * Time.fixedDeltaTime);
+                if (kneeLaserParent.position.y <= -5)
+                {
+                    isPatternTwo = false;
+                    kneeLasers = GameObject.FindGameObjectsWithTag("kneeLaser");
+                    foreach (GameObject newkneeLaser in kneeLasers)
+                    {
+                        Destroy(newkneeLaser);
+                    }
+                }
+            }
         }
 
         //make laser pattern work
@@ -64,8 +88,9 @@ public class bossOne : MonoBehaviour
                     Destroy(newLaser);
                 }
                 bossTransform.rotation = Quaternion.identity;
+                timeSinceStart = 0;
             }
-            timeSinceStart += Time.deltaTime;
+            timeSinceStart += Time.fixedDeltaTime;
         }
     }
 
@@ -112,7 +137,13 @@ public class bossOne : MonoBehaviour
     //he tries to take out your knee caps (vulnerable)
     private void patternTwo()
     {
-
+        for(int i = 0; i < 10; i++)
+        {
+            GameObject newKneeLaser = Instantiate(laserBar, new Vector3(12 + i*5, -3), Quaternion.identity, kneeLaserParent);
+            newKneeLaser.transform.localScale = new Vector3(2.5f, laserSize);
+            newKneeLaser.gameObject.tag = "kneeLaser";
+            isPatternTwo = true;
+        }
     }
 
     //pulses of pellets
