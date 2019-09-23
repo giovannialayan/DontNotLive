@@ -18,13 +18,15 @@ public class bossOne : MonoBehaviour
     public GameObject laserBar;
     private float timeSinceStart = 0;
     public float laserSpeed = 25f;
-    public float laserSize = .2f;
+    public float laserSize = 2f;
     private GameObject[] lasers;
 
     //knee laser variables
     public Transform kneeLaserParent;
+    public GameObject kneeLaser;
     private GameObject[] kneeLasers;
     public float kneeLaserSpeed = 5f;
+    public float kneeLaserSize = 2f;
     private Vector3 kneeLaserStartPos = new Vector3(10, -3.5f);
     private Vector3 kneeLaserEndPos = new Vector3(-30, -3.5f);
     private float journey;
@@ -41,15 +43,23 @@ public class bossOne : MonoBehaviour
         new Vector3(-1.5f,2.5f), new Vector3(-.75f,2.5f), new Vector3(0,2.5f),     new Vector3(.75f,2.5f),  new Vector3(1.5f,2.5f), new Vector3(1.5f,1.75f),
         //          3:00                     3:45                     4:30                     5:15
         new Vector3(1.5f,1),     new Vector3(1.5f,.25f),  new Vector3(1.5f,-.5f),  new Vector3(.75f,-.5f) };
-    //private int ringCount = 0;
     public float pelletRotSpeed = 1;
     private Vector3 ringTargetSize = new Vector3(7,7);
     public float pelletExpandSpeed = 1;
+
+    //boulder variables
+    public GameObject boulder;
+    public Transform boulderParent;
+    public float boulderSize = 4;
+    private Vector3 boulderLeftPos = new Vector3(-8, 0);
+    private Vector3 boulderRightPos = new Vector3(14, 0);
+    public float boulderSpeed = 4;
 
     //pattern variables
     private bool isPatternOne = false;
     private bool isPatternTwo = false;
     private bool isPatternThree = false;
+    private bool isPatternFour = false;
 
     void Start()
     {
@@ -60,21 +70,30 @@ public class bossOne : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Input.GetKeyDown("1") && !isPatternOne && !isPatternTwo && !isPatternThree)
+        //be able to test patterns
+        if (Input.GetKeyDown("1") && !isPatternOne && !isPatternTwo && !isPatternThree && !isPatternFour)
         {
+            timeSinceStart = 0;
             patternOne();
         }
-        if (Input.GetKeyDown("2") && !isPatternOne && !isPatternTwo && !isPatternThree)
+        if (Input.GetKeyDown("2") && !isPatternOne && !isPatternTwo && !isPatternThree && !isPatternFour)
         {
+            timeSinceStart = 0;
             patternTwo();
         }
-        if (Input.GetKeyDown("3") && !isPatternOne && !isPatternTwo && !isPatternThree)
+        if (Input.GetKeyDown("3") && !isPatternOne && !isPatternTwo && !isPatternThree && !isPatternFour)
         {
+            timeSinceStart = 0;
             patternThree();
+        }
+        if (Input.GetKeyDown("4") && !isPatternOne && !isPatternTwo && !isPatternThree && !isPatternFour)
+        {
+            timeSinceStart = 0;
+            patternFour();
         }
 
         //make pellet pattern work
-        if (isPatternThree && !isPatternOne && !isPatternTwo)
+        if (isPatternThree && !isPatternOne && !isPatternTwo && !isPatternFour)
         {
             pelletParents = GameObject.FindGameObjectsWithTag("pelletParent");
             for(int i = 0; i < pelletParents.Length; i++)
@@ -82,6 +101,7 @@ public class bossOne : MonoBehaviour
                 pelletRings[i] = pelletParents[i].GetComponent<Transform>();
             }
             
+            //rotate rings, every other ring in the opposite direction
             for(int i=0; i<pelletParents.Length; i++)
             {
                 if (i % 2 == 0)
@@ -94,7 +114,7 @@ public class bossOne : MonoBehaviour
                 }
             }
 
-            //scale rings up
+            //scale rings up to expand the pellets
             for (int i = 0; i < pelletParents.Length; i++)
             {
                 pelletRings[i].localScale = Vector3.Lerp(pelletRings[i].localScale, ringTargetSize, pelletExpandSpeed);
@@ -124,24 +144,77 @@ public class bossOne : MonoBehaviour
                     Destroy(pelletParent);
                 }
                 isPatternThree = false;
-                timeSinceStart = 0;
                 pelletParents = null;
                 pelletRings = new Transform[8];
+                Debug.Log("pattern three end");
             }
 
             timeSinceStart += Time.fixedDeltaTime;
         }
 
-        //make knee cap pattern work
-        if (isPatternTwo && !isPatternOne && !isPatternThree)
+        //make boulder pattern work
+        if (isPatternFour && !isPatternOne && !isPatternTwo && !isPatternThree)
         {
+            //move boulders toward left side of screen
+            if (timeSinceStart < 4)
+            {
+                boulderParent.position = Vector3.MoveTowards(boulderParent.position, boulderLeftPos, boulderSpeed * Time.fixedDeltaTime);
+            }
+            //move boulders toward right of screen and go off screen
+            else if (timeSinceStart < 8.8)
+            {
+                boulderParent.position = Vector3.MoveTowards(boulderParent.position, boulderRightPos, boulderSpeed * Time.fixedDeltaTime);
+            }
+            //move boulders back to the left side of the screen at higher speed
+            else if(timeSinceStart > 8.8)
+            {
+                boulderParent.position = Vector3.MoveTowards(boulderParent.position, boulderLeftPos * 2, 4 * boulderSpeed * Time.fixedDeltaTime);
+            }
+            //make boulders rotate as they move
+            if(timeSinceStart <= 8.8)
+            {
+                for(int i=0; i < boulderParent.childCount; i++)
+                {
+                    Transform currentBoulder = boulderParent.GetChild(i);
+                    currentBoulder.Rotate(0,0,15,Space.Self);
+                }
+            }
+            else if(timeSinceStart > 8.8)
+            {
+                for (int i = 0; i < boulderParent.childCount; i++)
+                {
+                    Transform currentBoulder = boulderParent.GetChild(i);
+                    currentBoulder.Rotate(0, 0, 30, Space.Self);
+                }
+            }
+            //reset
+            if(Vector3.Distance(boulderParent.position, boulderLeftPos * 2) < 1)
+            {
+                GameObject[] boulders = GameObject.FindGameObjectsWithTag("boulder");
+                foreach(GameObject newBoulder in boulders)
+                {
+                    Destroy(newBoulder);
+                }
+                boulderParent.position = new Vector3(11,0);
+                isPatternFour = false;
+                Debug.Log("pattern four end");
+            }
+            timeSinceStart += Time.fixedDeltaTime;
+        }
+        
+        //make knee cap pattern work
+        if (isPatternTwo && !isPatternOne && !isPatternThree && !isPatternFour)
+        {
+            //move lasers to left side of screen
             if (kneeLaserParent.position.x > kneeLaserEndPos.x)
             {
                 kneeLaserParent.position = Vector3.MoveTowards(kneeLaserParent.position, kneeLaserEndPos, kneeLaserSpeed * Time.fixedDeltaTime);
             }
+            //stop abruptly and move them downward
             else if(kneeLaserParent.position.x <= kneeLaserEndPos.x)
             {
                 kneeLaserParent.position = Vector3.MoveTowards(kneeLaserParent.position, new Vector3(-30, -5), 1 * Time.fixedDeltaTime);
+                //reset
                 if (kneeLaserParent.position.y <= -5)
                 {
                     isPatternTwo = false;
@@ -150,12 +223,14 @@ public class bossOne : MonoBehaviour
                     {
                         Destroy(newkneeLaser);
                     }
+                    kneeLaserParent.position = new Vector3(10,-3.5f);
+                    Debug.Log("pattern two end");
                 }
             }
         }
 
         //make laser pattern work
-        if (isPatternOne && !isPatternTwo && !isPatternThree)
+        if (isPatternOne && !isPatternTwo && !isPatternThree && !isPatternFour)
         {
             //rotate counterclockwise
             if (timeSinceStart >= 0 && timeSinceStart < 3.62)
@@ -177,12 +252,15 @@ public class bossOne : MonoBehaviour
                     Destroy(newLaser);
                 }
                 bossTransform.rotation = Quaternion.identity;
-                timeSinceStart = 0;
+                Debug.Log("pattern one end");
             }
             timeSinceStart += Time.fixedDeltaTime;
         }
+
+        //hitPlayer()
     }
 
+    //reduce boss health when hit and trigger boss death when health reaches 0
     public void takeDamage(int damage)
     {
         if (health > 0)
@@ -196,6 +274,7 @@ public class bossOne : MonoBehaviour
         }
     }
 
+    //update healthbar
     private void decreaseHealthBar(float health)
     {
         healthBar.localScale = new Vector3(health / 100, 1);
@@ -222,8 +301,9 @@ public class bossOne : MonoBehaviour
 
             newLaser.transform.localScale = new Vector3(laserSize, 15);
             newLaser.gameObject.tag = "laser";
-            isPatternOne = true;
         }
+        isPatternOne = true;
+        Debug.Log("pattern one start");
     }
 
     //he tries to take out your knee caps (vulnerable)
@@ -231,11 +311,12 @@ public class bossOne : MonoBehaviour
     {
         for(int i = 0; i < 10; i++)
         {
-            GameObject newKneeLaser = Instantiate(laserBar, new Vector3(12 + i*5, -3), Quaternion.identity, kneeLaserParent);
-            newKneeLaser.transform.localScale = new Vector3(2.5f, laserSize);
+            GameObject newKneeLaser = Instantiate(kneeLaser, new Vector3(12 + i*5, -3), Quaternion.identity, kneeLaserParent);
+            newKneeLaser.transform.localScale = new Vector3(8f, kneeLaserSize);
             newKneeLaser.gameObject.tag = "kneeLaser";
-            isPatternTwo = true;
         }
+        isPatternTwo = true;
+        Debug.Log("pattern two start");
     }
 
     //pulses of pellets
@@ -246,16 +327,24 @@ public class bossOne : MonoBehaviour
         for (int i = 0; i < pelletPos.Length; i++)
         {
             GameObject newPellet = Instantiate(pellet, pelletPos[i], Quaternion.identity, newPelletParent.GetComponent<Transform>());
-            newPellet.transform.localScale = new Vector3(.1f, .1f);
+            newPellet.transform.localScale = new Vector3(.5f, .5f);
             newPellet.gameObject.tag = "pellet_" + i;
         }
         isPatternThree = true;
+        Debug.Log("pattern three start");
     }
 
     //boulders from one side of the screen to the other (vulnerable)
     private void patternFour()
     {
-
+        for (int i = 0; i < 3; i++)
+        {
+            GameObject newBoulder = Instantiate(boulder,new Vector3(9, 3f - i*3),Quaternion.identity,boulderParent);
+            newBoulder.transform.localScale = new Vector3(boulderSize,boulderSize);
+            newBoulder.gameObject.tag = "boulder";
+        }
+        isPatternFour = true;
+        Debug.Log("patter four start");
     }
 
     //check of the current timeSinceStart is an iteration of x sec
@@ -297,5 +386,10 @@ public class bossOne : MonoBehaviour
         {
             return false;
         }
+    }
+
+    private void hitPlayer()
+    {
+
     }
 }

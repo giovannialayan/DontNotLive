@@ -23,6 +23,7 @@ TagManager:
   - pellet_13
   - pellet_14
   - pellet_15
+  - boulder
   layers:
   - Default
   - TransparentFX
