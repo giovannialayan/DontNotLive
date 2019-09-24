@@ -58,6 +58,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: telegraph
+    uniqueID: 69888641
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
@@ -75,4 +78,7 @@ TagManager:
     locked: 0
   - name: player hud
     uniqueID: 2375680843
+    locked: 0
+  - name: canvas
+    uniqueID: 2618138099
     locked: 0

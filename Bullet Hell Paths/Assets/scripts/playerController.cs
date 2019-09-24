@@ -284,7 +284,6 @@ public class playerController : MonoBehaviour
             }
             if (health > 4)
             {
-
                 gameOver();
             }
         }

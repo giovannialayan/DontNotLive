@@ -60,21 +60,32 @@ public class bossOne : MonoBehaviour
     private bool isPatternThree = false;
     private bool isPatternFour = false;
     private float coolDown = 4;
+    private float pattern;
+
+    //telegraph variables
+    public SpriteRenderer laserTelegraph;
+    public SpriteRenderer kneeLaserTelegraph;
+    public SpriteRenderer pelletTelegraph;
+    public SpriteRenderer boulderTelegraph;
 
     //win variables
     public Image gameOverScreen;
     public Text gameOverText;
     public Text timeText;
+    public playerController lizy;
 
     void Start()
     {
         bossSprite = GetComponent<SpriteRenderer>();
         bossTransform = GetComponent<Transform>();
+        pattern = Random.Range(0.0f, 4.0f);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        Debug.Log(pattern);
+        //choose attack, use attack and handle cooldown
         if (!isPatternOne && !isPatternTwo && !isPatternThree && !isPatternFour)
         {
             if (coolDown > 0)
@@ -83,30 +94,53 @@ public class bossOne : MonoBehaviour
             }
             else if (coolDown <= 0)
             {
+                stopTelegraph();
+
                 coolDown = 4;
                 timeSinceStart = 0;
-                int pattern = Random.Range(0, 5);
-                //30% chance of getting pattern 1
-                if (pattern < 1.5)
-                {
-                    patternOne();
-                }
-                //20% chance for pattern 2
-                else if (pattern < 2.5)
-                {
-                    patternTwo();
-                }
-                //15% chance for pattern 3
-                else if (pattern < 3.25)
+                
+                //25% chance of getting pattern 3
+                if (pattern < 1 && bossHealth < 50)
                 {
                     patternThree();
                 }
+                //25% chance for pattern 1
+                else if (pattern < 2)
+                {
+                    patternOne();
+                }
                 //25% chance for pattern 4
-                else if (pattern < 4.5)
+                else if (pattern < 3)
                 {
                     patternFour();
                 }
-                //10% for nothing
+                //25% chance for pattern 2
+                else if (pattern < 4)
+                {
+                    patternTwo();
+                }
+                pattern = Random.Range(0.0f, 4.0f);
+            }
+        }
+
+        //boss attack telegraphs
+        if(coolDown <= 2 && coolDown > 0)
+        {
+            if (pattern < 1 && bossHealth < 50)
+            {
+                patternThreeTelegraph();
+            }
+            else if (pattern < 2)
+            {
+                patternOneTelegraph();
+            }
+            else if (pattern < 3)
+            {
+                patternFourTelegraph();
+            }
+            else if (pattern < 4)
+            {
+                patternTwoTelegraph();
             }
         }
 
@@ -296,6 +330,11 @@ public class bossOne : MonoBehaviour
             }
             timeSinceStart += Time.fixedDeltaTime;
         }
+
+        if(bossHealth <= 0)
+        {
+            lizy.health = 0;
+        }
     }
 
     //reduce boss health when hit and trigger boss death when health reaches 0
@@ -386,6 +425,70 @@ public class bossOne : MonoBehaviour
         //Debug.Log("patter four start");
     }
 
+    private void patternOneTelegraph()
+    {
+        Color c = laserTelegraph.color;
+        if(c.a > 0)
+        {
+            c.a = coolDown/2;
+        }
+        else
+        {
+            c.a = 1;
+        }
+        laserTelegraph.color = c;
+    }
+
+    private void patternTwoTelegraph()
+    {
+        Color c = kneeLaserTelegraph.color;
+        if (c.a > 0)
+        {
+            c.a = coolDown / 2;
+        }
+        else
+        {
+            c.a = 1;
+        }
+        kneeLaserTelegraph.color = c;
+    }
+
+    private void patternThreeTelegraph()
+    {
+        Color c = pelletTelegraph.color;
+        if (c.a > 0)
+        {
+            c.a = coolDown / 2;
+        }
+        else
+        {
+            c.a = 1;
+        }
+        pelletTelegraph.color = c;
+    }
+
+    private void patternFourTelegraph()
+    {
+        Color c = boulderTelegraph.color;
+        if (c.a > 0)
+        {
+            c.a = coolDown / 2;
+        }
+        else
+        {
+            c.a = 1;
+        }
+        boulderTelegraph.color = c;
+    }
+
+    private void stopTelegraph()
+    {
+        laserTelegraph.color = new Color(1, .4f, .985f, 0);
+        kneeLaserTelegraph.color = new Color(1, .4f, .985f, 0);
+        pelletTelegraph.color = new Color(1, .4f, .985f, 0);
+        boulderTelegraph.color = new Color(1, .4f, .985f, 0);
+    }
+
     //check of the current timeSinceStart is an iteration of x sec
     private bool isGoodTime(float x)
     {
@@ -432,7 +535,7 @@ public class bossOne : MonoBehaviour
         gameOverScreen.color = new Color(0, 0, 0, 1);
         gameOverText.text = "You Win";
         gameOverText.color = new Color(1, 1, 1, 1);
-        timeText.text = "your time was " + Time.time;
+        timeText.text = "your time was " + (Time.time/60).ToString("F0") + ":" + (Time.time % 60).ToString("F2");
         timeText.color = new Color(1, 1, 1, 1);
     }
 }
