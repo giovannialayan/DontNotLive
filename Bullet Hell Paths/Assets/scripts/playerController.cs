@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class playerController : MonoBehaviour
 {
@@ -12,14 +14,16 @@ public class playerController : MonoBehaviour
 
     //animation variables
     bool isGrounded;
-    bool facingLeft = false;
+    public bool facingLeft = false;
 
     //attack variables
-    private bool canAttack = true;
+    public bool canAttack = true;
     public float attackSpeed = 1;
+    private float timer;
     public float attackRange = 1;
-    public int attackDamage = 50;
+    public int attackDamage = 5;
     public Transform attackPos;
+    public Text attackSpeedDisplay;
 
     //enemy variables
     public LayerMask enemies;
@@ -30,14 +34,26 @@ public class playerController : MonoBehaviour
     public float fallMultiplier = 2;
     public float lowJumpMultiplier = 2.5f;
 
-    //counting frames be like
-    private int timer = 1;
+    //player stats
+    public int health = 0;
+
+    //damaging the player
+    public bool canTakeDamage = true;
+    public float damageBoostTimer = 0;
+    public bool full = true;
+    public Transform playerHealth;
+
+    //game over variables
+    public Image gameOverScreen;
+    public Text gameOverText;
+    public Text restartText;
     
     void Start()
     {
         animator = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        timer = attackSpeed;
     }
 
     private void FixedUpdate()
@@ -55,7 +71,6 @@ public class playerController : MonoBehaviour
         //right left movement
         if (Input.GetKey("d"))
         {
-            
             if (isGrounded && !isPlaying("lizy attack"))
             {
                 rigid.velocity = new Vector2(runSpeed, rigid.velocity.y);
@@ -70,9 +85,9 @@ public class playerController : MonoBehaviour
         }
         else if(Input.GetKey("a"))
         {
-            rigid.velocity = new Vector2(-runSpeed, rigid.velocity.y);
             if (isGrounded && !isPlaying("lizy attack"))
             {
+                rigid.velocity = new Vector2(-runSpeed, rigid.velocity.y);
                 spriteRenderer.flipX = false;
                 animator.Play("lizy running left");
                 facingLeft = true;
@@ -146,12 +161,8 @@ public class playerController : MonoBehaviour
         //attacking
         if (Input.GetMouseButtonDown(0) && canAttack)
         {
-            //Debug.Log(Camera.main.ScreenToWorldPoint(Input.mousePosition).x + ", " + rigid.position.x);
-            attack();
             if (Camera.main.ScreenToWorldPoint(Input.mousePosition).x > floorCheck.position.x)
             {
-                rigid.velocity = new Vector2(4, rigid.velocity.y);
-
                 spriteRenderer.flipX = false;
                 facingLeft = false;
                 if (isGrounded)
@@ -165,8 +176,6 @@ public class playerController : MonoBehaviour
             }
             else
             {
-                rigid.velocity = new Vector2(-4, rigid.velocity.y);
-                
                 spriteRenderer.flipX = true;
                 facingLeft = true;
                 if (isGrounded)
@@ -178,18 +187,53 @@ public class playerController : MonoBehaviour
                     animator.Play("lizy attack jump");
                 }
             }
+            attack(facingLeft);
             canAttack = false;
         }
 
         //timer for attackspeed
         if (!canAttack)
         {
-            timer++;
-            if(timer == 50 * attackSpeed)
+            attackSpeedDisplay.text = timer.ToString("F2");
+            timer-= Time.fixedDeltaTime;
+            if(timer <= 0)
             {
                 canAttack = true;
-                timer = 1;
+                timer = attackSpeed;
+                attackSpeedDisplay.text = "0.00";
             }
+        }
+
+        //timer for damage boost
+        if (!canTakeDamage)
+        {
+            Color c = spriteRenderer.material.color;
+            if (full)
+            {
+                c.a = .3f;
+            }
+            else
+            {
+                c.a = 1;
+            }
+            spriteRenderer.material.color = c;
+            full = !full;
+
+            damageBoostTimer += Time.fixedDeltaTime;
+            if (damageBoostTimer >= 3)
+            {
+                canTakeDamage = true;
+                damageBoostTimer = 0;
+                c.a = 1;
+                spriteRenderer.material.color = c;
+                full = true;
+            }
+        }
+
+        //reset game
+        if (Input.GetKeyDown("r"))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 
@@ -200,12 +244,23 @@ public class playerController : MonoBehaviour
     }
 
     //create a hitbox and deal damage to enemies
-    private void attack()
+    private void attack(bool facingLeft)
     {
-        Collider2D[] enemyToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, enemies);
-        for(int i = 0; i < enemyToDamage.Length; i++)
+        if (!facingLeft)
         {
-            enemyToDamage[i].GetComponent<bossOne>().takeDamage(attackDamage);
+            Collider2D[] enemyToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, enemies);
+            for (int i = 0; i < enemyToDamage.Length; i++)
+            {
+                enemyToDamage[i].GetComponent<bossOne>().takeDamage(attackDamage);
+            }
+        }
+        else
+        {
+            Collider2D[] enemyToDamage = Physics2D.OverlapCircleAll(new Vector3(attackPos.position.x - .85f, attackPos.position.y), attackRange, enemies);
+            for (int i = 0; i < enemyToDamage.Length; i++)
+            {
+                enemyToDamage[i].GetComponent<bossOne>().takeDamage(attackDamage);
+            }
         }
     }
 
@@ -213,5 +268,35 @@ public class playerController : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(attackPos.position, attackRange);
+        Gizmos.DrawWireSphere(new Vector3(attackPos.position.x - .85f, attackPos.position.y), attackRange);
+    }
+
+    //make the player take damage if they are hit by an attack
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.ToString() != "boss1" && collision.isTrigger)
+        {
+            if (canTakeDamage && health < 5)
+            {
+                playerHealth.GetChild(health).GetComponent<SpriteRenderer>().material.color = new Color(0,0,0,0);
+                health++;
+                canTakeDamage = false;
+            }
+            if (health > 4)
+            {
+
+                gameOver();
+            }
+        }
+    }
+
+    private void gameOver()
+    {
+        gameOverScreen.color = new Color(0, 0, 0, 1);
+        gameOverText.text = "Game Over";
+        gameOverText.color = new Color(1,1,1,1);
+        restartText.text = "press r to restart";
+        restartText.color = new Color(1,1,1,1);
+        //stop music and sounds whenever i decide to add those to the game
     }
 }

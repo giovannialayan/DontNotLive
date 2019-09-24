@@ -73,3 +73,6 @@ TagManager:
   - name: terrain
     uniqueID: 2136510259
     locked: 0
+  - name: player hud
+    uniqueID: 2375680843
+    locked: 0
