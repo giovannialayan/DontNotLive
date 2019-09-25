@@ -13,13 +13,16 @@ public class bossOne : MonoBehaviour
     public float bossHealth = 100;
     public Transform healthBar;
     public Text healthText;
+    private bool isInvincible = true;
 
     //laser variables
     public GameObject laserBar;
     private float timeSinceStart = 0;
     private GameObject[] lasers;
-    private float laserSpeed = 25f;
+    //private float laserSpeed = 30f;
     private float laserSize = .5f;
+    private bool clockwise = false;
+    private bool counterClockwise = false;
 
     //knee laser variables
     public Transform kneeLaserParent;
@@ -27,8 +30,8 @@ public class bossOne : MonoBehaviour
     private GameObject[] kneeLasers;
     private Vector3 kneeLaserStartPos = new Vector3(10, -3.5f);
     private Vector3 kneeLaserEndPos = new Vector3(-30, -3.5f);
-    private float kneeLaserSpeed = 5f;
-    private float kneeLaserSize = 2f;
+    private float kneeLaserSpeed = 7f;
+    private float kneeLaserSize = 2.5f;
 
     //pellet pulse variables
     public GameObject pellet;
@@ -53,13 +56,15 @@ public class bossOne : MonoBehaviour
     private Vector3 boulderRightPos = new Vector3(14, 0);
     private float boulderSpeed = 10;
     private float boulderSize = 4;
+    private bool reachedLeft = false;
+    private bool reachedRight = false;
 
     //pattern variables
     private bool isPatternOne = false;
     private bool isPatternTwo = false;
     private bool isPatternThree = false;
     private bool isPatternFour = false;
-    private float coolDown = 4;
+    private float coolDown = 1.1f;
     private float pattern;
 
     //telegraph variables
@@ -84,7 +89,11 @@ public class bossOne : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        Debug.Log(pattern);
+        if(Time.timeSinceLevelLoad > 1.8 && Time.timeSinceLevelLoad < 4)
+        {
+            isInvincible = false;
+        }
+        
         //choose attack, use attack and handle cooldown
         if (!isPatternOne && !isPatternTwo && !isPatternThree && !isPatternFour)
         {
@@ -95,53 +104,88 @@ public class bossOne : MonoBehaviour
             else if (coolDown <= 0)
             {
                 stopTelegraph();
-
-                coolDown = 4;
+                coolDown = 1.1f;
                 timeSinceStart = 0;
-                
-                //25% chance of getting pattern 3
-                if (pattern < 1 && bossHealth < 50)
+                if (bossHealth > bossHealth/2)
                 {
-                    patternThree();
+                    if(pattern < 4 / 3)
+                    {
+                        patternTwo();
+                    }
+                    else if(pattern < (4 / 3) * 2)
+                    {
+                        patternOne();
+                    }
+                    else if (pattern < 4)
+                    {
+                        patternFour();
+                    }
                 }
-                //25% chance for pattern 1
-                else if (pattern < 2)
+                else
                 {
-                    patternOne();
-                }
-                //25% chance for pattern 4
-                else if (pattern < 3)
-                {
-                    patternFour();
-                }
-                //25% chance for pattern 2
-                else if (pattern < 4)
-                {
-                    patternTwo();
+                    //35% chance of getting pattern 3
+                    if (pattern < 1.5)
+                    {
+                        patternThree();
+                    }
+                    //30% chance for pattern 1
+                    else if (pattern < 2.75)
+                    {
+                        patternOne();
+                    }
+                    //20% chance for pattern 2
+                    else if (pattern < 3.5)
+                    {
+                        patternTwo();
+                    }
+                    //15% chance for pattern 4
+                    else if (pattern < 4)
+                    {
+                        patternFour();
+                    }
                 }
                 pattern = Random.Range(0.0f, 4.0f);
             }
         }
 
         //boss attack telegraphs
-        if(coolDown <= 2 && coolDown > 0)
+        if(coolDown <= 1 && coolDown > 0)
         {
-            if (pattern < 1 && bossHealth < 50)
+            if(bossHealth > bossHealth/2)
             {
-                patternThreeTelegraph();
+                if (pattern < 4 / 3)
+                {
+                    patternTwoTelegraph();
+                }
+                else if (pattern < (4 / 3) * 2)
+                {
+                    patternOneTelegraph();
+                }
+                else if (pattern < 4)
+                {
+                    patternFourTelegraph();
+                }
             }
-            else if (pattern < 2)
+            else
             {
-                patternOneTelegraph();
+                if (pattern < 1)
+                {
+                    patternThreeTelegraph();
+                }
+                else if (pattern < 2)
+                {
+                    patternOneTelegraph();
+                }
+                else if (pattern < 3)
+                {
+                    patternFourTelegraph();
+                }
+                else if (pattern < 4)
+                {
+                    patternTwoTelegraph();
+                }
             }
-            else if (pattern < 3)
-            {
-                patternFourTelegraph();
-            }
-            else if (pattern < 4)
-            {
-                patternTwoTelegraph();
-            }
+            
         }
 
         //be able to test patterns
@@ -169,18 +213,38 @@ public class bossOne : MonoBehaviour
         //make laser pattern work
         if (isPatternOne && !isPatternTwo && !isPatternThree && !isPatternFour)
         {
-            //rotate counterclockwise
-            if (timeSinceStart >= 0 && timeSinceStart < 3.62)
+            //rotate counterclockwise to 45 in .8 sec
+            if (!clockwise && !counterClockwise)
             {
-                bossTransform.rotation = Quaternion.Slerp(Quaternion.Euler(0, 0, 0), Quaternion.Euler(0, 0, Mathf.PingPong(timeSinceStart * laserSpeed, 45)), timeSinceStart);
+                bossTransform.rotation = Quaternion.Slerp(Quaternion.Euler(0, 0, 0), Quaternion.Euler(0, 0, 45), timeSinceStart * 1.25f);
+                if (bossTransform.rotation.z >= .382)
+                {
+                    //timeSinceStart == .8 here
+                    clockwise = true;
+                    timeSinceStart = 0;
+                }
             }
-            //rotate clockwise
-            else if (timeSinceStart >= 3.62 && timeSinceStart < 7.22)
+            //rotate clockwise to -90 in (.8 * 3) sec
+            else if (clockwise && !counterClockwise)
             {
-                bossTransform.rotation = Quaternion.Slerp(Quaternion.Euler(0, 0, 0), Quaternion.Euler(0, 0, Mathf.PingPong(timeSinceStart * laserSpeed, 45) * -1f), timeSinceStart);
+                bossTransform.rotation = Quaternion.Slerp(Quaternion.Euler(0, 0, 45), Quaternion.Euler(0, 0, -90), timeSinceStart / 3f);
+                if (bossTransform.rotation.z <= -.6)
+                {
+                    counterClockwise = true;
+                    timeSinceStart = 0;
+                }
             }
-            //stop rotating and destroy lasers and reset rotation of bossOne
-            else if (timeSinceStart >= 7.22)
+            //rotate counterclockwise to 0 in less than 1 sec
+            else if (counterClockwise && clockwise)
+            {
+                bossTransform.rotation = Quaternion.Slerp(Quaternion.Euler(0, 0, -73.8f), Quaternion.Euler(0, 0, 0), timeSinceStart / 2f);
+                if(bossTransform.rotation == Quaternion.identity)
+                {
+                    clockwise = false;
+                    Debug.Log(timeSinceStart);
+                }
+            }
+            else
             {
                 isPatternOne = false;
                 lasers = GameObject.FindGameObjectsWithTag("laser");
@@ -189,7 +253,7 @@ public class bossOne : MonoBehaviour
                     Destroy(newLaser);
                 }
                 bossTransform.rotation = Quaternion.identity;
-                //Debug.Log("pattern one end");
+                counterClockwise = false;
             }
             timeSinceStart += Time.fixedDeltaTime;
         }
@@ -285,39 +349,34 @@ public class bossOne : MonoBehaviour
         if (isPatternFour && !isPatternOne && !isPatternTwo && !isPatternThree)
         {
             //move boulders toward left side of screen
-            if (timeSinceStart < 4)
+            if (!reachedLeft && !reachedRight)
             {
                 boulderParent.position = Vector3.MoveTowards(boulderParent.position, boulderLeftPos, boulderSpeed * Time.fixedDeltaTime);
-            }
-            //move boulders toward right of screen and go off screen
-            else if (timeSinceStart < 8.8)
-            {
-                boulderParent.position = Vector3.MoveTowards(boulderParent.position, boulderRightPos, boulderSpeed * Time.fixedDeltaTime);
-            }
-            //move boulders back to the left side of the screen at higher speed
-            else if (timeSinceStart > 8.8)
-            {
-                boulderParent.position = Vector3.MoveTowards(boulderParent.position, boulderLeftPos * 2, 3.5f * boulderSpeed * Time.fixedDeltaTime);
-            }
-            //make boulders rotate as they move
-            if (timeSinceStart <= 8.8)
-            {
-                for (int i = 0; i < boulderParent.childCount; i++)
+                if(Vector3.Distance(boulderParent.position, boulderLeftPos) < .1)
                 {
-                    Transform currentBoulder = boulderParent.GetChild(i);
-                    currentBoulder.Rotate(0, 0, 15, Space.Self);
+                    reachedLeft = true;
                 }
             }
-            else if (timeSinceStart > 8.8)
+            //move boulders toward right of screen and go off screen
+            else if (reachedLeft && !reachedRight)
             {
-                for (int i = 0; i < boulderParent.childCount; i++)
+                boulderParent.position = Vector3.MoveTowards(boulderParent.position, boulderRightPos, boulderSpeed * Time.fixedDeltaTime);
+                if(Vector3.Distance(boulderParent.position, boulderRightPos) < .1)
                 {
-                    Transform currentBoulder = boulderParent.GetChild(i);
-                    currentBoulder.Rotate(0, 0, 30, Space.Self);
+                    reachedRight = true;
+                }
+            }
+            //move boulders back to the left side of the screen at higher speed
+            else if (reachedRight && reachedLeft)
+            {
+                boulderParent.position = Vector3.MoveTowards(boulderParent.position, boulderLeftPos * 2, 3.5f * boulderSpeed * Time.fixedDeltaTime);
+                if (Vector3.Distance(boulderParent.position, boulderLeftPos * 2) < 1)
+                {
+                    reachedLeft = false;
                 }
             }
             //reset
-            if (Vector3.Distance(boulderParent.position, boulderLeftPos * 2) < 1)
+            else
             {
                 GameObject[] boulders = GameObject.FindGameObjectsWithTag("boulder");
                 foreach (GameObject newBoulder in boulders)
@@ -326,11 +385,30 @@ public class bossOne : MonoBehaviour
                 }
                 boulderParent.position = new Vector3(11, 0);
                 isPatternFour = false;
-                //Debug.Log("pattern four end");
+                reachedRight = false;
             }
+            //make boulders rotate as they move
+            if (!reachedRight)
+            {
+                for (int i = 0; i < boulderParent.childCount; i++)
+                {
+                    Transform currentBoulder = boulderParent.GetChild(i);
+                    currentBoulder.Rotate(0, 0, 15, Space.Self);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < boulderParent.childCount; i++)
+                {
+                    Transform currentBoulder = boulderParent.GetChild(i);
+                    currentBoulder.Rotate(0, 0, 30, Space.Self);
+                }
+            }
+            
             timeSinceStart += Time.fixedDeltaTime;
         }
 
+        //make lizy invincible after you win
         if(bossHealth <= 0)
         {
             lizy.health = 0;
@@ -340,7 +418,7 @@ public class bossOne : MonoBehaviour
     //reduce boss health when hit and trigger boss death when health reaches 0
     public void takeDamage(int damage)
     {
-        if (bossHealth > 0)
+        if (bossHealth > 0 && !isInvincible)
         {
             bossHealth -= damage;
             decreaseHealthBar(bossHealth);
@@ -355,7 +433,7 @@ public class bossOne : MonoBehaviour
     //update healthbar
     private void decreaseHealthBar(float health)
     {
-        healthBar.localScale = new Vector3(health / 100, 1);
+        healthBar.localScale = new Vector3(health / 150, 1);
         healthText.text = health.ToString();
     }
 
@@ -430,7 +508,7 @@ public class bossOne : MonoBehaviour
         Color c = laserTelegraph.color;
         if(c.a > 0)
         {
-            c.a = coolDown/2;
+            c.a = coolDown;
         }
         else
         {
@@ -444,7 +522,7 @@ public class bossOne : MonoBehaviour
         Color c = kneeLaserTelegraph.color;
         if (c.a > 0)
         {
-            c.a = coolDown / 2;
+            c.a = coolDown;
         }
         else
         {
@@ -458,7 +536,7 @@ public class bossOne : MonoBehaviour
         Color c = pelletTelegraph.color;
         if (c.a > 0)
         {
-            c.a = coolDown / 2;
+            c.a = coolDown;
         }
         else
         {
@@ -472,7 +550,7 @@ public class bossOne : MonoBehaviour
         Color c = boulderTelegraph.color;
         if (c.a > 0)
         {
-            c.a = coolDown / 2;
+            c.a = coolDown;
         }
         else
         {
@@ -535,7 +613,7 @@ public class bossOne : MonoBehaviour
         gameOverScreen.color = new Color(0, 0, 0, 1);
         gameOverText.text = "You Win";
         gameOverText.color = new Color(1, 1, 1, 1);
-        timeText.text = "your time was " + (Time.time/60).ToString("F0") + ":" + (Time.time % 60).ToString("F2");
+        timeText.text = "your time was\n" + "from start of fight: " + (Time.timeSinceLevelLoad/60).ToString("F0") + ":" + (Time.timeSinceLevelLoad % 60).ToString("F2") + "\n from startup of game: " + (Time.time / 60).ToString("F0") + ":" + (Time.time % 60).ToString("F2");
         timeText.color = new Color(1, 1, 1, 1);
     }
 }

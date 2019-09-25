@@ -56,7 +56,7 @@ public class playerController : MonoBehaviour
         timer = attackSpeed;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         //check if lizy is on the ground
         if(Physics2D.Linecast(transform.position, floorCheck.position, 1 << LayerMask.NameToLayer("ground")))
@@ -159,9 +159,9 @@ public class playerController : MonoBehaviour
             
         }
         //attacking
-        if (Input.GetMouseButtonDown(0) && canAttack)
+        if (canAttack)
         {
-            if (Camera.main.ScreenToWorldPoint(Input.mousePosition).x > floorCheck.position.x)
+            if ((Input.GetMouseButtonDown(0) && Camera.main.ScreenToWorldPoint(Input.mousePosition).x >= floorCheck.position.x) || Input.GetKeyDown("right"))
             {
                 spriteRenderer.flipX = false;
                 facingLeft = false;
@@ -173,8 +173,10 @@ public class playerController : MonoBehaviour
                 {
                     animator.Play("lizy attack jump");
                 }
+                attack(facingLeft);
+                canAttack = false;
             }
-            else
+            else if((Input.GetMouseButtonDown(0) && Camera.main.ScreenToWorldPoint(Input.mousePosition).x < floorCheck.position.x) || Input.GetKeyDown("left"))
             {
                 spriteRenderer.flipX = true;
                 facingLeft = true;
@@ -186,16 +188,16 @@ public class playerController : MonoBehaviour
                 {
                     animator.Play("lizy attack jump");
                 }
+                attack(facingLeft);
+                canAttack = false;
             }
-            attack(facingLeft);
-            canAttack = false;
         }
 
         //timer for attackspeed
         if (!canAttack)
         {
             attackSpeedDisplay.text = timer.ToString("F2");
-            timer-= Time.fixedDeltaTime;
+            timer-= Time.deltaTime;
             if(timer <= 0)
             {
                 canAttack = true;
@@ -219,7 +221,7 @@ public class playerController : MonoBehaviour
             spriteRenderer.material.color = c;
             full = !full;
 
-            damageBoostTimer += Time.fixedDeltaTime;
+            damageBoostTimer += Time.deltaTime;
             if (damageBoostTimer >= 3)
             {
                 canTakeDamage = true;

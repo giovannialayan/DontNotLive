@@ -6,5 +6,6 @@ D - strafe right
 Space - jump
 S - fast fall
 Left Click - attack
+left & right arrow keys - attack
 R - restart
 Alt + F4 - quit
