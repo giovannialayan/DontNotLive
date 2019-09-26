@@ -106,7 +106,7 @@ public class bossOne : MonoBehaviour
                 stopTelegraph();
                 coolDown = 1.1f;
                 timeSinceStart = 0;
-                if (bossHealth > bossHealth/2)
+                if (bossHealth > 75)
                 {
                     if(pattern < 4 / 3)
                     {
@@ -151,7 +151,7 @@ public class bossOne : MonoBehaviour
         //boss attack telegraphs
         if(coolDown <= 1 && coolDown > 0)
         {
-            if(bossHealth > bossHealth/2)
+            if(bossHealth > 75)
             {
                 if (pattern < 4 / 3)
                 {
@@ -168,21 +168,21 @@ public class bossOne : MonoBehaviour
             }
             else
             {
-                if (pattern < 1)
+                if (pattern < 1.5)
                 {
                     patternThreeTelegraph();
                 }
-                else if (pattern < 2)
+                else if (pattern < 2.75)
                 {
                     patternOneTelegraph();
                 }
-                else if (pattern < 3)
+                else if (pattern < 3.5)
                 {
-                    patternFourTelegraph();
+                    patternTwoTelegraph();
                 }
                 else if (pattern < 4)
                 {
-                    patternTwoTelegraph();
+                    patternFourTelegraph();
                 }
             }
             

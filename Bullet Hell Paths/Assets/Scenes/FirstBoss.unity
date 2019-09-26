@@ -2798,7 +2798,7 @@ MonoBehaviour:
   canAttack: 1
   attackSpeed: 0.5
   attackRange: 0.5
-  attackDamage: 50
+  attackDamage: 5
   attackPos: {fileID: 1184849339}
   attackSpeedDisplay: {fileID: 266106258}
   enemies:

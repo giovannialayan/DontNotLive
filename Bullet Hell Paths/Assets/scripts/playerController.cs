@@ -147,7 +147,7 @@ public class playerController : MonoBehaviour
         //fast fall
         if (Input.GetKeyDown("s") && !isGrounded)
         {
-            rigid.velocity = new Vector2(rigid.velocity.x, -15);
+            rigid.velocity = new Vector2(rigid.velocity.x, -30);
             if (!isPlaying("lizy attack jump"))
             {
                 animator.Play("lizy land");
