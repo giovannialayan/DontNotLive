@@ -276,8 +276,12 @@ public class playerController : MonoBehaviour
     //make the player take damage if they are hit by an attack
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.ToString() != "boss1" && collision.isTrigger)
+        if (collision.isTrigger)
         {
+            if (collision.name == "kill zone")
+            {
+                health = 5;
+            }
             if (canTakeDamage && health < 5)
             {
                 playerHealth.GetChild(health).GetComponent<SpriteRenderer>().material.color = new Color(0,0,0,0);

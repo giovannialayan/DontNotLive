@@ -16,11 +16,12 @@ public class bossOne : MonoBehaviour
     private bool isInvincible = true;
 
     //laser variables
+    public Transform laserPivot;
     public GameObject laserBar;
     private float timeSinceStart = 0;
     private GameObject[] lasers;
     //private float laserSpeed = 30f;
-    private float laserSize = .5f;
+    private float laserSize = 1f;
     private bool clockwise = false;
     private bool counterClockwise = false;
 
@@ -66,6 +67,11 @@ public class bossOne : MonoBehaviour
     private bool isPatternFour = false;
     private float coolDown = 1.1f;
     private float pattern;
+    public Transform lizyTransform;
+    private float patternOneChance = .33f;
+    private float patternTwoChance = .66f;
+    private float patternThreeChance = .3f;
+    private float patternFourChance = 1;
 
     //telegraph variables
     public SpriteRenderer laserTelegraph;
@@ -83,7 +89,7 @@ public class bossOne : MonoBehaviour
     {
         bossSprite = GetComponent<SpriteRenderer>();
         bossTransform = GetComponent<Transform>();
-        pattern = Random.Range(0.0f, 4.0f);
+        pattern = Random.Range(0.0f, 1.0f);
     }
 
     // Update is called once per frame
@@ -108,43 +114,41 @@ public class bossOne : MonoBehaviour
                 timeSinceStart = 0;
                 if (bossHealth > 75)
                 {
-                    if(pattern < 4 / 3)
+                    if(pattern < patternTwoChance)
                     {
                         patternTwo();
                     }
-                    else if(pattern < (4 / 3) * 2)
+                    else if(pattern < patternOneChance)
                     {
                         patternOne();
                     }
-                    else if (pattern < 4)
+                    else if (pattern < patternFourChance)
                     {
                         patternFour();
                     }
                 }
                 else
                 {
-                    //35% chance of getting pattern 3
-                    if (pattern < 1.5)
+                    //always 30% chance of getting pattern 3
+                    if (pattern < patternThreeChance)
                     {
                         patternThree();
                     }
-                    //30% chance for pattern 1
-                    else if (pattern < 2.75)
-                    {
-                        patternOne();
-                    }
-                    //20% chance for pattern 2
-                    else if (pattern < 3.5)
+                    else if (pattern < patternTwoChance)
                     {
                         patternTwo();
                     }
-                    //15% chance for pattern 4
-                    else if (pattern < 4)
+                    else if (pattern < patternOneChance)
+                    {
+                        patternOne();
+                    }
+                    else if (pattern < patternFourChance)
                     {
                         patternFour();
                     }
                 }
-                pattern = Random.Range(0.0f, 4.0f);
+                choosePatternRange();
+                pattern = Random.Range(0.0f, 1.0f);
             }
         }
 
@@ -153,34 +157,34 @@ public class bossOne : MonoBehaviour
         {
             if(bossHealth > 75)
             {
-                if (pattern < 4 / 3)
+                if (pattern < patternTwoChance)
                 {
                     patternTwoTelegraph();
                 }
-                else if (pattern < (4 / 3) * 2)
+                else if (pattern < patternOneChance)
                 {
                     patternOneTelegraph();
                 }
-                else if (pattern < 4)
+                else if (pattern < patternFourChance)
                 {
                     patternFourTelegraph();
                 }
             }
             else
             {
-                if (pattern < 1.5)
+                if (pattern < patternThreeChance)
                 {
                     patternThreeTelegraph();
                 }
-                else if (pattern < 2.75)
-                {
-                    patternOneTelegraph();
-                }
-                else if (pattern < 3.5)
+                else if (pattern < patternTwoChance)
                 {
                     patternTwoTelegraph();
                 }
-                else if (pattern < 4)
+                else if (pattern < patternOneChance)
+                {
+                    patternOneTelegraph();
+                }
+                else if (pattern < patternFourChance)
                 {
                     patternFourTelegraph();
                 }
@@ -216,8 +220,8 @@ public class bossOne : MonoBehaviour
             //rotate counterclockwise to 45 in .8 sec
             if (!clockwise && !counterClockwise)
             {
-                bossTransform.rotation = Quaternion.Slerp(Quaternion.Euler(0, 0, 0), Quaternion.Euler(0, 0, 45), timeSinceStart * 1.25f);
-                if (bossTransform.rotation.z >= .382)
+                laserPivot.rotation = Quaternion.Slerp(Quaternion.Euler(0, 0, 0), Quaternion.Euler(0, 0, 45), timeSinceStart * 1.25f);
+                if (laserPivot.rotation.z >= .382)
                 {
                     //timeSinceStart == .8 here
                     clockwise = true;
@@ -227,8 +231,8 @@ public class bossOne : MonoBehaviour
             //rotate clockwise to -90 in (.8 * 3) sec
             else if (clockwise && !counterClockwise)
             {
-                bossTransform.rotation = Quaternion.Slerp(Quaternion.Euler(0, 0, 45), Quaternion.Euler(0, 0, -90), timeSinceStart / 3f);
-                if (bossTransform.rotation.z <= -.6)
+                laserPivot.rotation = Quaternion.Slerp(Quaternion.Euler(0, 0, 45), Quaternion.Euler(0, 0, -90), timeSinceStart / 3f);
+                if (laserPivot.rotation.z <= -.6)
                 {
                     counterClockwise = true;
                     timeSinceStart = 0;
@@ -237,11 +241,10 @@ public class bossOne : MonoBehaviour
             //rotate counterclockwise to 0 in less than 1 sec
             else if (counterClockwise && clockwise)
             {
-                bossTransform.rotation = Quaternion.Slerp(Quaternion.Euler(0, 0, -73.8f), Quaternion.Euler(0, 0, 0), timeSinceStart / 2f);
-                if(bossTransform.rotation == Quaternion.identity)
+                laserPivot.rotation = Quaternion.Slerp(Quaternion.Euler(0, 0, -73.8f), Quaternion.Euler(0, 0, 0), timeSinceStart / 2f);
+                if(laserPivot.rotation == Quaternion.identity)
                 {
                     clockwise = false;
-                    Debug.Log(timeSinceStart);
                 }
             }
             else
@@ -252,7 +255,7 @@ public class bossOne : MonoBehaviour
                 {
                     Destroy(newLaser);
                 }
-                bossTransform.rotation = Quaternion.identity;
+                laserPivot.rotation = Quaternion.identity;
                 counterClockwise = false;
             }
             timeSinceStart += Time.fixedDeltaTime;
@@ -444,6 +447,7 @@ public class bossOne : MonoBehaviour
         for (int i = 0; i < 8; i++)
         {
             Quaternion rotation = Quaternion.identity;
+            Vector3 position = new Vector3(0,1);
             if (i == 0) { rotation = Quaternion.identity; } //6 o clock
             else if (i == 1) { rotation = Quaternion.Euler(0, 0, -45); } //7:30
             else if (i == 2) { rotation = Quaternion.Euler(0, 0, -90); }  //9 o clock
@@ -453,7 +457,7 @@ public class bossOne : MonoBehaviour
             else if (i == 6) { rotation = Quaternion.Euler(0, 0, 90); }   //3 o clock
             else if (i == 7) { rotation = Quaternion.Euler(0, 0, 45); }  //4:30
 
-            GameObject newLaser = Instantiate(laserBar, new Vector3(0, 1), rotation, bossTransform);
+            GameObject newLaser = Instantiate(laserBar, new Vector3(0, 1), rotation, laserPivot);
 
             newLaser.transform.localScale = new Vector3(laserSize, 15);
             newLaser.gameObject.tag = "laser";
@@ -605,6 +609,67 @@ public class bossOne : MonoBehaviour
         else
         {
             return false;
+        }
+    }
+
+    //decide how to wieght the decision for the pattern based on where the player is
+    private void choosePatternRange()
+    {
+        if (bossHealth > 75)
+        {
+            if (lizyTransform.position.y < -1 && lizyTransform.position.x < bossTransform.position.x)
+            {
+                //70% 15% 15% ?
+                //on the ground and on the left
+                //boulder pattern
+                patternTwoChance = .15f;
+                patternOneChance = .3f;
+                patternFourChance = 1f;
+            }
+            else if (lizyTransform.position.y < -1 && lizyTransform.position.x > bossTransform.position.x)
+            {
+                //on the ground and on the right
+                //knee laser pattern
+                patternTwoChance = .7f;
+                patternOneChance = .85f;
+                patternFourChance = 1f;
+            }
+            else
+            {
+                //in the air
+                //laser pattern
+                patternTwoChance = .15f;
+                patternOneChance = .85f;
+                patternFourChance = 1f;
+            }
+        }
+        else
+        {
+            if (lizyTransform.position.y < -1.5 && lizyTransform.position.x < bossTransform.position.x)
+            {
+                //50% 10% 10% 30% ?
+                //on the ground and on the left
+                //boulder pattern
+                patternTwoChance = .4f;
+                patternOneChance = .5f;
+                patternFourChance = 1f;
+            }
+            else if (lizyTransform.position.y < -1.5 && lizyTransform.position.x > bossTransform.position.x)
+            {
+                //on the ground and on the right
+                //knee laser pattern
+                patternTwoChance = .8f;
+                patternOneChance = .9f;
+                patternFourChance = 1f;
+            }
+            else
+            {
+                //in the air
+                //laser pattern
+                patternTwoChance = .4f;
+                patternOneChance = .9f;
+                patternFourChance = 1f;
+            }
         }
     }
 
