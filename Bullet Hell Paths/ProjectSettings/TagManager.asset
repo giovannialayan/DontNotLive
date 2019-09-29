@@ -24,6 +24,7 @@ TagManager:
   - pellet_14
   - pellet_15
   - boulder
+  - rain
   layers:
   - Default
   - TransparentFX

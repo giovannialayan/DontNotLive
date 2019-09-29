@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class bossOne : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class bossOne : MonoBehaviour
     Transform bossTransform;
 
     //health varaibles
-    public float bossHealth = 100;
+    private float bossHealth = 150;
     public Transform healthBar;
     public Text healthText;
     private bool isInvincible = true;
@@ -84,6 +85,7 @@ public class bossOne : MonoBehaviour
     public Text gameOverText;
     public Text timeText;
     public playerController lizy;
+    private bool bossBeaten = false;
 
     void Start()
     {
@@ -416,6 +418,11 @@ public class bossOne : MonoBehaviour
         {
             lizy.health = 0;
         }
+
+        if (bossBeaten && Input.anyKeyDown)
+        {
+            SceneManager.LoadScene("FrankBoss");
+        }
     }
 
     //reduce boss health when hit and trigger boss death when health reaches 0
@@ -678,7 +685,30 @@ public class bossOne : MonoBehaviour
         gameOverScreen.color = new Color(0, 0, 0, 1);
         gameOverText.text = "You Win";
         gameOverText.color = new Color(1, 1, 1, 1);
-        timeText.text = "your time was\n" + "from start of fight: " + (Time.timeSinceLevelLoad/60).ToString("F0") + ":" + (Time.timeSinceLevelLoad % 60).ToString("F2") + "\n from startup of game: " + (Time.time / 60).ToString("F0") + ":" + (Time.time % 60).ToString("F2");
+        timeText.text = "your time was\n" + "from start of fight: ";
+        string minLevel = (Time.timeSinceLevelLoad / 60).ToString("F0");
+        string secLevel = (Time.timeSinceLevelLoad % 60).ToString("F2");
+        string minFull = (Time.time / 60).ToString("F0");
+        string secFull = (Time.time % 60).ToString("F2");
+        if (Time.timeSinceLevelLoad / 60 < 10)
+        {
+            minLevel = "0" + minLevel;
+        }
+        if(Time.timeSinceLevelLoad % 60 < 10)
+        {
+            secLevel = "0" + secLevel;
+        }
+        timeText.text += minLevel + ":" + secLevel + "\n from startup of game: ";
+        if (Time.time / 60 < 10)
+        {
+            minFull = "0" + minFull;
+        }
+        if (Time.time % 60 < 10)
+        {
+            secFull = "0" + secFull;
+        }
+        timeText.text += minFull + ":" + secFull;
         timeText.color = new Color(1, 1, 1, 1);
+        bossBeaten = true;
     }
 }

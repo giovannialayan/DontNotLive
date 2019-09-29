@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 25700b93cce7fef43b1df337b139b825
+guid: 0e64690c66d1ae6409d0dc390207ebba
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7925233368970587135
-    second: lizy attack jump_0
+      213: 5210156756397347543
+    second: lizy attack up jump_0
   - first:
-      213: 3786115760552413565
-    second: lizy attack jump_1
+      213: 1065403509265417501
+    second: lizy attack up jump_1
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -64,7 +64,7 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   platformSettings:
-  - serializedVersion: 2
+  - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -75,7 +75,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - serializedVersion: 2
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -86,7 +87,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - serializedVersion: 2
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
     buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -97,17 +99,18 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: lizy attack jump_0
+      name: lizy attack up jump_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 48
-        height: 48
+        width: 64
+        height: 64
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,20 +118,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ccf0db067139ed0489c3ec3d70fa9e76
-      internalID: -7925233368970587135
+      spriteID: 3b36ba517ae1ae44e864452da7f8816b
+      internalID: 5210156756397347543
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: lizy attack jump_1
+      name: lizy attack up jump_1
       rect:
         serializedVersion: 2
-        x: 48
+        x: 64
         y: 0
-        width: 48
-        height: 48
+        width: 64
+        height: 64
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -136,8 +139,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 78659329322ab53408f1e930f90882bf
-      internalID: 3786115760552413565
+      spriteID: c5541b49ef0648846ab31597e62ad09e
+      internalID: 1065403509265417501
       vertices: []
       indices: 
       edges: []
@@ -145,7 +148,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 49a12f64ce4864543b020d9289a4028f
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 

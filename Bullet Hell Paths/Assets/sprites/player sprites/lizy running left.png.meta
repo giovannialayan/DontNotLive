@@ -1,31 +1,31 @@
 fileFormatVersion: 2
-guid: 9c07a2177abd1a542956cc1affb99944
+guid: 5b5ec1cbb4fec3247b1132e6e1dc8cf0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5068199887910298113
-    second: lizy idle_0
+      213: 2758639204149870093
+    second: lizy running left_0
   - first:
-      213: 6598654834612018379
-    second: lizy idle_1
+      213: -4169892940810872405
+    second: lizy running left_1
   - first:
-      213: -1519517964985956249
-    second: lizy idle_2
+      213: -3947689692072844139
+    second: lizy running left_2
   - first:
-      213: 1567180509153396672
-    second: lizy idle_3
+      213: 7075629585668732483
+    second: lizy running left_3
   - first:
-      213: 5537470251707506971
-    second: lizy idle_4
+      213: 672422894551431123
+    second: lizy running left_4
   - first:
-      213: 7387668620810711337
-    second: lizy idle_5
+      213: -5747405608892203334
+    second: lizy running left_5
   - first:
-      213: 6550126442230169954
-    second: lizy idle_6
+      213: 6265453164125643898
+    second: lizy running left_6
   - first:
-      213: -8484823371725283200
-    second: lizy idle_7
+      213: -2403794438933419732
+    second: lizy running left_7
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -67,8 +67,8 @@ TextureImporter:
   spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 0
-  spritePivot: {x: 0.5, y: 0.5}
+  alignment: 7
+  spritePivot: {x: 0.5, y: 0}
   spritePixelsToUnits: 1
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
@@ -82,7 +82,7 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   platformSettings:
-  - serializedVersion: 2
+  - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -93,7 +93,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - serializedVersion: 2
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -104,7 +105,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - serializedVersion: 2
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
     buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -115,11 +117,12 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: lizy idle_0
+      name: lizy running left_0
       rect:
         serializedVersion: 2
         x: 0
@@ -133,14 +136,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d48c76fe8a6259d438cbcff745da395a
-      internalID: -5068199887910298113
+      spriteID: 43c7ee67432162b41bfb3282a0073b0a
+      internalID: 2758639204149870093
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: lizy idle_1
+      name: lizy running left_1
       rect:
         serializedVersion: 2
         x: 48
@@ -154,14 +157,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 97c023369fc92344fa80a8b0ea056ac8
-      internalID: 6598654834612018379
+      spriteID: 32e5ec18cf5eebd499e2a8542d81c2fe
+      internalID: -4169892940810872405
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: lizy idle_2
+      name: lizy running left_2
       rect:
         serializedVersion: 2
         x: 96
@@ -175,14 +178,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 59a59676665c9a54381b057f468de1a6
-      internalID: -1519517964985956249
+      spriteID: 0097d2d8482d6df43b35a7d830173888
+      internalID: -3947689692072844139
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: lizy idle_3
+      name: lizy running left_3
       rect:
         serializedVersion: 2
         x: 144
@@ -196,14 +199,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c589f0a9fda49b94fa2f4ea7b06654d7
-      internalID: 1567180509153396672
+      spriteID: 96d1eea4a430b5b4fb59a2ef00f69f82
+      internalID: 7075629585668732483
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: lizy idle_4
+      name: lizy running left_4
       rect:
         serializedVersion: 2
         x: 192
@@ -217,14 +220,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c2832c4000ef35d459a11501d735dab7
-      internalID: 5537470251707506971
+      spriteID: 0e5d8ac103bc96946a9cb37be026fb27
+      internalID: 672422894551431123
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: lizy idle_5
+      name: lizy running left_5
       rect:
         serializedVersion: 2
         x: 240
@@ -238,14 +241,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ea6e4f9d400f68845aae12a9d46ff879
-      internalID: 7387668620810711337
+      spriteID: 3cc21e7728b6c3848ac4e9c64d2ce057
+      internalID: -5747405608892203334
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: lizy idle_6
+      name: lizy running left_6
       rect:
         serializedVersion: 2
         x: 288
@@ -259,14 +262,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 50760826c8c8cc849af9aea68d1f07db
-      internalID: 6550126442230169954
+      spriteID: 04243d17d22b4524cb9c21fefe2f039f
+      internalID: 6265453164125643898
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: lizy idle_7
+      name: lizy running left_7
       rect:
         serializedVersion: 2
         x: 336
@@ -280,8 +283,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 65bdf9f009888de45901b3a79411249a
-      internalID: -8484823371725283200
+      spriteID: 184069131191dfa4d82db6be38e2a7a9
+      internalID: -2403794438933419732
       vertices: []
       indices: 
       edges: []
@@ -289,7 +292,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: aa75167b649189b418d6cc7d631ddf73
+    spriteID: 8fd823c05468d1d4e86fb3d9d691861b
     internalID: 0
     vertices: []
     indices: 

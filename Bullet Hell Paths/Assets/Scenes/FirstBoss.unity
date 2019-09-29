@@ -434,6 +434,51 @@ Transform:
   m_Father: {fileID: 657910643}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &234239526
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 234239527}
+  - component: {fileID: 234239528}
+  m_Layer: 9
+  m_Name: damage boss
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &234239527
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234239526}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1253456665}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &234239528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234239526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51ce41028ab838e478e7e392d2bcef85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bossOne: {fileID: 1253456667}
+  bossTwo: {fileID: 0}
 --- !u!1 &266106256
 GameObject:
   m_ObjectHideFlags: 0
@@ -2030,7 +2075,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.1, z: 0}
   m_LocalScale: {x: 8.5, y: 8.5, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 234239527}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2072,7 +2118,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 771a49aff803d2542a14b85da33809b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bossHealth: 150
   healthBar: {fileID: 499884012}
   healthText: {fileID: 1626961389}
   laserPivot: {fileID: 1231479127}
@@ -2423,7 +2468,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1921, y: 1080}
+  m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1593969984
 GameObject:
@@ -2962,6 +3007,7 @@ MonoBehaviour:
   attackDamage: 5
   attackPos: {fileID: 1184849339}
   attackSpeedDisplay: {fileID: 266106258}
+  damageBosses: {fileID: 0}
   enemies:
     serializedVersion: 2
     m_Bits: 512
@@ -2970,6 +3016,7 @@ MonoBehaviour:
   fallMultiplier: 3
   lowJumpMultiplier: 4.5
   health: 0
+  maxHealth: 4
   canTakeDamage: 1
   damageBoostTimer: 0
   full: 1
@@ -2977,6 +3024,7 @@ MonoBehaviour:
   gameOverScreen: {fileID: 1051580088}
   gameOverText: {fileID: 302407287}
   restartText: {fileID: 1118881556}
+  activateUpAttack: 0
 --- !u!60 &1871605955
 PolygonCollider2D:
   m_ObjectHideFlags: 0

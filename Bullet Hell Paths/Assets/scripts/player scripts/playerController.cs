@@ -18,12 +18,13 @@ public class playerController : MonoBehaviour
 
     //attack variables
     public bool canAttack = true;
-    public float attackSpeed = 1;
+    public float attackSpeed = .5f;
     private float timer;
-    public float attackRange = 1;
+    public float attackRange = .5f;
     public int attackDamage = 5;
     public Transform attackPos;
     public Text attackSpeedDisplay;
+    public damageBosses damageBosses;
 
     //enemy variables
     public LayerMask enemies;
@@ -36,6 +37,7 @@ public class playerController : MonoBehaviour
 
     //player stats
     public int health = 0;
+    public int maxHealth = 4;
 
     //damaging the player
     public bool canTakeDamage = true;
@@ -47,6 +49,9 @@ public class playerController : MonoBehaviour
     public Image gameOverScreen;
     public Text gameOverText;
     public Text restartText;
+
+    //aggressive variables
+    public bool activateUpAttack = false;
     
     void Start()
     {
@@ -71,7 +76,7 @@ public class playerController : MonoBehaviour
         //right left movement
         if (Input.GetKey("d"))
         {
-            if (isGrounded && !isPlaying("lizy attack"))
+            if (isGrounded && (!isPlaying("lizy attack") && !isPlaying("lizy attack up")))
             {
                 rigid.velocity = new Vector2(runSpeed, rigid.velocity.y);
                 spriteRenderer.flipX = false;
@@ -85,7 +90,7 @@ public class playerController : MonoBehaviour
         }
         else if(Input.GetKey("a"))
         {
-            if (isGrounded && !isPlaying("lizy attack"))
+            if (isGrounded && (!isPlaying("lizy attack") && !isPlaying("lizy attack up")))
             {
                 rigid.velocity = new Vector2(-runSpeed, rigid.velocity.y);
                 spriteRenderer.flipX = false;
@@ -100,7 +105,7 @@ public class playerController : MonoBehaviour
         //idle
         else
         {
-            if (isGrounded && !isPlaying("lizy attack"))
+            if (isGrounded && (!isPlaying("lizy attack") && !isPlaying("lizy attack up")))
             {
                 animator.Play("lizy idle");
                 if (facingLeft)
@@ -115,7 +120,7 @@ public class playerController : MonoBehaviour
         if (Input.GetKeyDown("space") && isGrounded)
         {
             rigid.velocity = new Vector2(rigid.velocity.x, jumpSpeed);
-            if (!isPlaying("lizy attack jump") && rigid.velocity.y >= 0)
+            if ((!isPlaying("lizy attack jump") && !isPlaying("lizy attack up jump")) && rigid.velocity.y >= 0)
             {
                 animator.Play("lizy jump");
                 if (facingLeft)
@@ -134,7 +139,7 @@ public class playerController : MonoBehaviour
         {
             //make the fall a little faster
             rigid.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
-            if (!isPlaying("lizy attack jump"))
+            if (!isPlaying("lizy attack jump") && !isPlaying("lizy attack up jump"))
             {
                 animator.Play("lizy land");
                 if (facingLeft)
@@ -148,7 +153,7 @@ public class playerController : MonoBehaviour
         if (Input.GetKeyDown("s") && !isGrounded)
         {
             rigid.velocity = new Vector2(rigid.velocity.x, -30);
-            if (!isPlaying("lizy attack jump"))
+            if (!isPlaying("lizy attack jump") && !isPlaying("lizy attack up jump"))
             {
                 animator.Play("lizy land");
                 if (facingLeft)
@@ -161,7 +166,34 @@ public class playerController : MonoBehaviour
         //attacking
         if (canAttack)
         {
-            if ((Input.GetMouseButtonDown(0) && Camera.main.ScreenToWorldPoint(Input.mousePosition).x >= floorCheck.position.x) || Input.GetKeyDown("right"))
+            //attack above the player
+            if (activateUpAttack &&
+                ((Input.GetMouseButtonDown(0)
+                && Camera.main.ScreenToWorldPoint(Input.mousePosition).y >= transform.position.y
+                && Mathf.Abs(Camera.main.ScreenToWorldPoint(Input.mousePosition).x - transform.position.x) < 1)
+                || Input.GetKeyDown("up")))
+            {
+                if (!facingLeft)
+                {
+                    spriteRenderer.flipX = false;
+                }
+                else
+                {
+                    spriteRenderer.flipX = true;
+                }
+                if (isGrounded)
+                {
+                    animator.Play("lizy attack up");
+                }
+                else
+                {
+                    animator.Play("lizy attack up jump");
+                }
+                attack(facingLeft, true);
+                canAttack = false;
+            }
+            //attack to the right
+            else if ((Input.GetMouseButtonDown(0) && Camera.main.ScreenToWorldPoint(Input.mousePosition).x >= floorCheck.position.x) || Input.GetKeyDown("right"))
             {
                 spriteRenderer.flipX = false;
                 facingLeft = false;
@@ -173,9 +205,10 @@ public class playerController : MonoBehaviour
                 {
                     animator.Play("lizy attack jump");
                 }
-                attack(facingLeft);
+                attack(facingLeft, false);
                 canAttack = false;
             }
+            //attack to the left
             else if((Input.GetMouseButtonDown(0) && Camera.main.ScreenToWorldPoint(Input.mousePosition).x < floorCheck.position.x) || Input.GetKeyDown("left"))
             {
                 spriteRenderer.flipX = true;
@@ -188,7 +221,7 @@ public class playerController : MonoBehaviour
                 {
                     animator.Play("lizy attack jump");
                 }
-                attack(facingLeft);
+                attack(facingLeft, false);
                 canAttack = false;
             }
         }
@@ -246,11 +279,20 @@ public class playerController : MonoBehaviour
     }
 
     //create a hitbox and deal damage to enemies
-    private void attack(bool facingLeft)
+    private void attack(bool facingLeft, bool attackedUp)
     {
-        if (!facingLeft)
+        if (attackedUp)
         {
-            Collider2D[] enemyToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, enemies);
+            Collider2D[] enemyToDamage = Physics2D.OverlapCircleAll(new Vector3(attackPos.position.x, attackPos.position.y + .5f), attackRange, enemies);
+            for (int i = 0; i < enemyToDamage.Length; i++)
+            {
+                damageBosses.dealDamage(attackDamage);
+                //enemyToDamage[i].GetComponent<bossOne>().takeDamage(attackDamage);
+            }
+        }
+        else if (!facingLeft)
+        {
+            Collider2D[] enemyToDamage = Physics2D.OverlapCircleAll(new Vector3(attackPos.position.x + .425f, attackPos.position.y), attackRange, enemies);
             for (int i = 0; i < enemyToDamage.Length; i++)
             {
                 enemyToDamage[i].GetComponent<bossOne>().takeDamage(attackDamage);
@@ -258,7 +300,7 @@ public class playerController : MonoBehaviour
         }
         else
         {
-            Collider2D[] enemyToDamage = Physics2D.OverlapCircleAll(new Vector3(attackPos.position.x - .85f, attackPos.position.y), attackRange, enemies);
+            Collider2D[] enemyToDamage = Physics2D.OverlapCircleAll(new Vector3(attackPos.position.x - .425f, attackPos.position.y), attackRange, enemies);
             for (int i = 0; i < enemyToDamage.Length; i++)
             {
                 enemyToDamage[i].GetComponent<bossOne>().takeDamage(attackDamage);
@@ -269,8 +311,9 @@ public class playerController : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(attackPos.position, attackRange);
-        Gizmos.DrawWireSphere(new Vector3(attackPos.position.x - .85f, attackPos.position.y), attackRange);
+        Gizmos.DrawWireSphere(new Vector3(attackPos.position.x, attackPos.position.y + .5f), attackRange);
+        Gizmos.DrawWireSphere(new Vector3(attackPos.position.x + .425f, attackPos.position.y), attackRange);
+        Gizmos.DrawWireSphere(new Vector3(attackPos.position.x - .425f, attackPos.position.y), attackRange);
     }
 
     //make the player take damage if they are hit by an attack
@@ -280,15 +323,15 @@ public class playerController : MonoBehaviour
         {
             if (collision.name == "kill zone")
             {
-                health = 5;
+                health = maxHealth + 1;
             }
-            if (canTakeDamage && health < 5)
+            if (canTakeDamage && health < maxHealth + 1)
             {
                 playerHealth.GetChild(health).GetComponent<SpriteRenderer>().material.color = new Color(0,0,0,0);
                 health++;
                 canTakeDamage = false;
             }
-            if (health > 4)
+            if (health > maxHealth)
             {
                 gameOver();
             }
