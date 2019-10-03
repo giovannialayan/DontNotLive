@@ -22,10 +22,25 @@ public class bossTwo : MonoBehaviour
     private Vector3 rainEndPos = new Vector3(0, -40);
     private int emptyColumn;
 
+    //machine gun pattern
+    public GameObject followBullet;
+    public Transform gunParent;
+    private float gunSize = 1.5f;
+    private float bulletSpeed = 20f;
+    private Vector3 lizyLastPos;
+
+    //circle pattern
+    public GameObject attractBullet;
+    public Transform circleParent;
+    private Vector3 circleTargetSize = new Vector3(.01f,.01f);
+    private float circleShrinkSpeed = 1;
+
     //pattern variables
     private bool isRainPattern = false;
-
+    private bool isGunPattern = false;
+    private bool isAttractPattern = false;
     private float timeSinceStart = 0;
+    public Transform lizyTransform;
 
     //win variables
     public Image gameOverScreen;
@@ -37,6 +52,7 @@ public class bossTwo : MonoBehaviour
     void Start()
     {
         bossSprite = GetComponent<SpriteRenderer>();
+        circlePattern();
     }
     
     void FixedUpdate()
@@ -47,14 +63,19 @@ public class bossTwo : MonoBehaviour
         }
 
         //test patterns
-        if (Input.GetKeyDown("1") && !isRainPattern)
+        if (Input.GetKeyDown("1") && !isRainPattern && !isGunPattern)
         {
             timeSinceStart = 0;
             rainPattern();
         }
+        if(Input.GetKeyDown("2") && !isRainPattern && !isGunPattern)
+        {
+            timeSinceStart = 0;
+            gunPattern();
+        }
 
         //make rain pattern work
-        if (isRainPattern)
+        if (isRainPattern && !isGunPattern && !isAttractPattern)
         {
             rainParent.position = Vector3.MoveTowards(rainParent.position, rainEndPos, rainSpeed * Time.fixedDeltaTime);
             if (isGoodTime(.54f))
@@ -85,6 +106,39 @@ public class bossTwo : MonoBehaviour
                 rainParent.position = new Vector3(0, 6);
             }
             timeSinceStart += Time.fixedDeltaTime;
+        }
+
+        //make machine gun pattern work
+        if(isGunPattern && !isRainPattern && !isAttractPattern)
+        {
+            gunParent.position = Vector3.MoveTowards(gunParent.position, lizyLastPos * 4, bulletSpeed * Time.fixedDeltaTime);
+            gunPattern();
+            
+            timeSinceStart += Time.fixedDeltaTime;
+            if (isGoodTime(1))
+            {
+                GameObject[] bullets = GameObject.FindGameObjectsWithTag("bullet");
+                foreach (GameObject newBullet in bullets)
+                {
+                    Destroy(newBullet);
+                }
+                gunParent.position = new Vector3(0, 2);
+                if(timeSinceStart >= 8)
+                {
+                    isGunPattern = false;
+                }
+            }
+        }
+
+        //make attract pattern work
+        if (isAttractPattern && !isRainPattern && !isGunPattern)
+        {
+            Vector3 lastSize = circleParent.localScale;
+            circleParent.localScale = Vector3.Lerp(circleParent.localScale, circleTargetSize, circleShrinkSpeed * Time.fixedDeltaTime);
+            foreach(GameObject newAttractBullet in circleParent)
+            {
+                //scale children so they are the same as before the parent was rescaled
+            }
         }
 
         //make lizy invincible after you win
@@ -149,6 +203,54 @@ public class bossTwo : MonoBehaviour
         isRainPattern = true;
     }
 
+    //mahcine gun pattern
+    private void gunPattern()
+    {
+        if (isGoodTime(1) || timeSinceStart == 0)
+        {
+            lizyLastPos = lizyTransform.position;
+            Vector3 direction = lizyLastPos - gunParent.position;
+            gunParent.rotation = Quaternion.AngleAxis(Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg, Vector3.forward);
+        }
+        
+        GameObject newBullet = Instantiate(followBullet, new Vector3(0,2), gunParent.rotation, gunParent);
+        newBullet.tag = "bullet";
+        newBullet.transform.localScale = new Vector3(1, gunSize);
+        isGunPattern = true;
+    }
+
+    //terraform pattern
+    private void terraformPattern()
+    {
+
+    }
+
+    //bullets from one corner to another with a space somewhere to jump through. after the space passes make the side of the screen where the player came from rain down with bullets
+    private void crossPattern()
+    {
+
+    }
+
+    //half circle of randomly placed bullets off screen that slowly move toward frank
+    private void circlePattern()
+    {
+        for(int i=0; i<9; i++)
+        {
+            GameObject newAttractBullet = Instantiate(attractBullet, new Vector3(11,2), Quaternion.identity, circleParent);
+            Vector3 direction = transform.position - newAttractBullet.transform.position;
+            newAttractBullet.transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg, Vector3.forward);
+            newAttractBullet.tag = "bullet";
+            newAttractBullet.transform.localScale = new Vector3(1.5f,1);
+            if(i < 8)
+            {
+                circleParent.Rotate(0, 0, -22.5f, Space.Self);
+            }
+        }
+        isAttractPattern = true;
+    }
+    
+    //last pattern
+
     //check of the current timeSinceStart is an iteration of x sec
     private bool isGoodTime(float x)
     {
@@ -181,6 +283,10 @@ public class bossTwo : MonoBehaviour
             return true;
         }
         else if (timeSinceStart >= x * 8 - .01 && timeSinceStart <= x * 8 + .01)
+        {
+            return true;
+        }
+        else if (timeSinceStart >= x * 9 - .01 && timeSinceStart <= x * 9 + .01)
         {
             return true;
         }
