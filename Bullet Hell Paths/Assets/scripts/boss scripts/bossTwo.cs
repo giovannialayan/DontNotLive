@@ -32,8 +32,7 @@ public class bossTwo : MonoBehaviour
     //circle pattern
     public GameObject attractBullet;
     public Transform circleParent;
-    private Vector3 circleTargetSize = new Vector3(.01f,.01f);
-    private float circleShrinkSpeed = 1;
+    private float bulletAttractSpeed = 8;
 
     //pattern variables
     private bool isRainPattern = false;
@@ -133,11 +132,9 @@ public class bossTwo : MonoBehaviour
         //make attract pattern work
         if (isAttractPattern && !isRainPattern && !isGunPattern)
         {
-            Vector3 lastSize = circleParent.localScale;
-            circleParent.localScale = Vector3.Lerp(circleParent.localScale, circleTargetSize, circleShrinkSpeed * Time.fixedDeltaTime);
-            foreach(GameObject newAttractBullet in circleParent)
+            foreach (Transform newAttractBullet in circleParent.GetComponentsInChildren<Transform>())
             {
-                //scale children so they are the same as before the parent was rescaled
+                newAttractBullet.position = Vector3.MoveTowards(newAttractBullet.position, circleParent.position, bulletAttractSpeed * Time.fixedDeltaTime);
             }
         }
 
@@ -240,7 +237,7 @@ public class bossTwo : MonoBehaviour
             Vector3 direction = transform.position - newAttractBullet.transform.position;
             newAttractBullet.transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg, Vector3.forward);
             newAttractBullet.tag = "bullet";
-            newAttractBullet.transform.localScale = new Vector3(1.5f,1);
+            newAttractBullet.transform.localScale = new Vector3(1,.5f);
             if(i < 8)
             {
                 circleParent.Rotate(0, 0, -22.5f, Space.Self);

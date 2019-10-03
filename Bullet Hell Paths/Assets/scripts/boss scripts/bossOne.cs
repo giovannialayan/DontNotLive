@@ -71,7 +71,7 @@ public class bossOne : MonoBehaviour
     public Transform lizyTransform;
     private float patternOneChance = .33f;
     private float patternTwoChance = .66f;
-    private float patternThreeChance = .3f;
+    private float patternThreeChance = .4f;
     private float patternFourChance = 1;
 
     //telegraph variables
@@ -131,7 +131,7 @@ public class bossOne : MonoBehaviour
                 }
                 else
                 {
-                    //always 30% chance of getting pattern 3
+                    //always 40% chance of getting pattern 3
                     if (pattern < patternThreeChance)
                     {
                         patternThree();
@@ -285,7 +285,6 @@ public class bossOne : MonoBehaviour
                         Destroy(newkneeLaser);
                     }
                     kneeLaserParent.position = new Vector3(10, -3.5f);
-                    //Debug.Log("pattern two end");
                 }
             }
         }
@@ -320,10 +319,9 @@ public class bossOne : MonoBehaviour
                 {
                     pelletRings[i].localScale = ringTargetSize;
                 }
-                GameObject[] pelletChildren = GameObject.FindGameObjectsWithTag("pellet_" + i);
-                foreach (GameObject pellet in pelletChildren)
+                foreach (Transform pellet in pelletRings[i].GetComponentsInChildren<Transform>())
                 {
-                    Vector3 pelletScale = pellet.GetComponent<Transform>().localScale;
+                    Vector3 pelletScale = pellet.localScale;
                     pelletScale = new Vector3(pelletScale.x / pelletRings[i].localScale.x, pelletScale.y / pelletRings[i].localScale.y);
                 }
             }
@@ -344,7 +342,6 @@ public class bossOne : MonoBehaviour
                 isPatternThree = false;
                 pelletParents = null;
                 pelletRings = new Transform[8];
-                //Debug.Log("pattern three end");
             }
 
             timeSinceStart += Time.fixedDeltaTime;
@@ -495,10 +492,8 @@ public class bossOne : MonoBehaviour
         {
             GameObject newPellet = Instantiate(pellet, pelletPos[i], Quaternion.identity, newPelletParent.GetComponent<Transform>());
             newPellet.transform.localScale = new Vector3(.5f, .5f);
-            newPellet.gameObject.tag = "pellet_" + i;
         }
         isPatternThree = true;
-        //Debug.Log("pattern three start");
     }
 
     //boulders from one side of the screen to the other (vulnerable)
@@ -654,27 +649,27 @@ public class bossOne : MonoBehaviour
         {
             if (lizyTransform.position.y < -1.5 && lizyTransform.position.x < bossTransform.position.x)
             {
-                //50% 10% 10% 30% ?
+                //40% 15% 15% 30% ?
                 //on the ground and on the left
                 //boulder pattern
-                patternTwoChance = .4f;
-                patternOneChance = .5f;
+                patternTwoChance = .55f;
+                patternOneChance = .7f;
                 patternFourChance = 1f;
             }
             else if (lizyTransform.position.y < -1.5 && lizyTransform.position.x > bossTransform.position.x)
             {
                 //on the ground and on the right
                 //knee laser pattern
-                patternTwoChance = .8f;
-                patternOneChance = .9f;
+                patternTwoChance = .7f;
+                patternOneChance = .85f;
                 patternFourChance = 1f;
             }
             else
             {
                 //in the air
                 //laser pattern
-                patternTwoChance = .4f;
-                patternOneChance = .9f;
+                patternTwoChance = .55f;
+                patternOneChance = .85f;
                 patternFourChance = 1f;
             }
         }
