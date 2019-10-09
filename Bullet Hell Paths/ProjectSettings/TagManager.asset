@@ -10,6 +10,8 @@ TagManager:
   - boulder
   - rain
   - bullet
+  - bossOneAttack
+  - bossTwoAttack
   layers:
   - Default
   - TransparentFX

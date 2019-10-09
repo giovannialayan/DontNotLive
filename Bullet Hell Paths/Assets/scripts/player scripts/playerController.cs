@@ -49,6 +49,8 @@ public class playerController : MonoBehaviour
     public Image gameOverScreen;
     public Text gameOverText;
     public Text restartText;
+    public static int deaths = 0;
+    private bool isDead = false;
 
     //aggressive variables
     public bool activateUpAttack = false;
@@ -331,7 +333,7 @@ public class playerController : MonoBehaviour
                 health++;
                 canTakeDamage = false;
             }
-            if (health > maxHealth)
+            if (health > maxHealth && !isDead)
             {
                 gameOver();
             }
@@ -345,6 +347,8 @@ public class playerController : MonoBehaviour
         gameOverText.color = new Color(1,1,1,1);
         restartText.text = "press r to restart";
         restartText.color = new Color(1,1,1,1);
+        isDead = true;
+        deaths++;
         //stop music and sounds whenever i decide to add those to the game
     }
 }

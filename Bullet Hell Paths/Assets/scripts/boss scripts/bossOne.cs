@@ -411,15 +411,15 @@ public class bossOne : MonoBehaviour
         }
 
         //make lizy invincible after you win
-        if(bossHealth <= 0)
+        if(bossBeaten)
         {
             lizy.health = 0;
         }
 
-        if (bossBeaten && Input.anyKeyDown)
-        {
-            SceneManager.LoadScene("FrankBoss");
-        }
+        //if (bossBeaten && Input.anyKeyDown)
+        //{
+        //    SceneManager.LoadScene("FrankBoss");
+        //}
     }
 
     //reduce boss health when hit and trigger boss death when health reaches 0
@@ -703,6 +703,8 @@ public class bossOne : MonoBehaviour
             secFull = "0" + secFull;
         }
         timeText.text += minFull + ":" + secFull;
+        timeText.text += "\n deaths: " + playerController.deaths;
+        playerController.deaths = 0;
         timeText.color = new Color(1, 1, 1, 1);
         bossBeaten = true;
     }

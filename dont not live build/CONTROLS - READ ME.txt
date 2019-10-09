@@ -1,0 +1,16 @@
+--------
+CONTROLS
+--------
+A - strafe left
+D - strafe right
+Space - jump
+S - fast fall
+Left Click - attack
+left, right & up arrow keys - attack
+R - restart
+Alt + F4 - quit
+
+-------
+UNLOCKS
+-------
+on any boss after Bruno you can attack upward
