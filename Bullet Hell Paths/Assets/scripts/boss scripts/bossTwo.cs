@@ -67,6 +67,9 @@ public class bossTwo : MonoBehaviour
     //walls variable
     private bool wallsActive = false;
 
+    //kill rain variable
+    public GameObject killRainObj;
+
     //pattern variables
     private bool isRainPattern = false;
     private bool isGunPattern = false;
@@ -128,7 +131,7 @@ public class bossTwo : MonoBehaviour
                 stopTelegraph();
                 coolDown = 1.1f;
                 timeSinceStart = 0;
-                if (bossHealth > 100)
+                if (bossHealth > 150)
                 {
                     if (pattern < rainChance)
                     {
@@ -186,7 +189,7 @@ public class bossTwo : MonoBehaviour
         //make telegraphs happen
         if (coolDown <= 1 && coolDown > 0)
         {
-            if (bossHealth > 100)
+            if (bossHealth > 150)
             {
                 if (pattern < rainChance)
                 {
@@ -291,6 +294,15 @@ public class bossTwo : MonoBehaviour
                 rainPattern();
             }
 
+            GameObject[] rainBullets = GameObject.FindGameObjectsWithTag("rain");
+            foreach (GameObject newRain in rainBullets)
+            {
+                if (newRain.transform.position.y < -5.2)
+                {
+                    Destroy(newRain);
+                }
+            }
+
             if (Vector3.Distance(rainParent.position, rainEndPos) < 2)
             {
                 GameObject[] rainObjects = GameObject.FindGameObjectsWithTag("rain");
@@ -334,7 +346,6 @@ public class bossTwo : MonoBehaviour
             int loopCount = 0;
             foreach (Transform newAttractBullet in circleParent.GetComponentsInChildren<Transform>())
             {
-                Debug.Log(Vector3.Distance(newAttractBullet.position, circleParent.position));
                 newAttractBullet.position = Vector3.MoveTowards(newAttractBullet.position, circleParent.position, bulletAttractSpeed * Time.fixedDeltaTime);
                 if (Vector3.Distance(newAttractBullet.position, circleParent.position) <= .01f && loopCount > 0)
                 {
@@ -440,10 +451,12 @@ public class bossTwo : MonoBehaviour
                     for (int i = 0; i < 8; i++)
                     {
                         bullets[i + 1].localPosition = Vector3.MoveTowards(bullets[i + 1].localPosition, grenadeBulletEndPos[i], grenadeBulletSpeed * Time.fixedDeltaTime);
+                        Vector3 direction = grenadeBulletEndPos[i] - bullets[i + 1].position;
+                        bullets[i + 1].localRotation = Quaternion.AngleAxis(Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg, Vector3.forward);
                     }
                     //make grenade opacity 0, disable collider so that children can continue to move locally and delete parent later to kill children too
                     grenade.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0);
-                    grenade.GetComponent<BoxCollider2D>().enabled = false;
+                    grenade.GetComponent<CircleCollider2D>().enabled = false;
                 }
             }
             if (isGoodTime(1, maxGrenades))
@@ -522,13 +535,13 @@ public class bossTwo : MonoBehaviour
             if (i != emptyColumn)
             {
                 GameObject newRainR = GameObject.Instantiate(rainLaser, new Vector3(i, 6), rainParent.rotation, rainParent);
-                newRainR.transform.localScale = new Vector3(rainSize, 1.5f);
+                //newRainR.transform.localScale = new Vector3(rainSize, 1.5f);
                 newRainR.tag = "rain";
             }
             if (-i != emptyColumn)
             {
                 GameObject newRainL = GameObject.Instantiate(rainLaser, new Vector3(-i, 6), rainParent.rotation, rainParent);
-                newRainL.transform.localScale = new Vector3(rainSize, 1.5f);
+                //newRainL.transform.localScale = new Vector3(rainSize, 1.5f);
                 newRainL.tag = "rain";
             }
         }
@@ -560,7 +573,7 @@ public class bossTwo : MonoBehaviour
             Vector3 direction = transform.position - newAttractBullet.transform.position;
             newAttractBullet.transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg, Vector3.forward);
             newAttractBullet.tag = "bullet";
-            newAttractBullet.transform.localScale = new Vector3(1, .5f);
+            //newAttractBullet.transform.localScale = new Vector3(1, .5f);
             if (i < 8)
             {
                 circleParent.Rotate(0, 0, -22.5f, Space.Self);
@@ -574,8 +587,8 @@ public class bossTwo : MonoBehaviour
     {
         if (timeSinceStart == 0)
         {
-            leftEmptyBullet = Random.Range(1, 6);
-            rightEmptyBullet = Random.Range(-5, 0);
+            leftEmptyBullet = Random.Range(2, 6);
+            rightEmptyBullet = Random.Range(-5, -1);
         }
         if (leftEmptyBullet != numberOfBullets)
         {
@@ -600,7 +613,7 @@ public class bossTwo : MonoBehaviour
     {
         for (int i = startX; i < endX; i++)
         {
-            GameObject newRain = GameObject.Instantiate(rainLaser, new Vector3(i, 6), rainParent.rotation, rainParent);
+            GameObject newRain = GameObject.Instantiate(killRainObj, new Vector3(i, 6), rainParent.rotation, rainParent);
             newRain.transform.localScale = new Vector3(rainSize, 1.5f);
             newRain.tag = "bullet";
         }
@@ -827,7 +840,7 @@ public class bossTwo : MonoBehaviour
 
     private void choosePatternRange()
     {
-        if (bossHealth > 100)
+        if (bossHealth > 150)
         {
             rainChance = 1f / 5f;
             gunChance = 1f / 5f * 2;
