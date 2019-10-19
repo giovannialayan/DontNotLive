@@ -66,6 +66,7 @@ public class bossTwo : MonoBehaviour
 
     //walls variable
     private bool wallsActive = false;
+    private bool wallsGenades = false;
 
     //kill rain variable
     public GameObject killRainObj;
@@ -80,12 +81,12 @@ public class bossTwo : MonoBehaviour
     private float timeSinceStart = 0;
     public Transform lizyTransform;
     private float pattern;
-    private float rainChance = 1f / 5f;
-    private float gunChance = 1f / 5f * 2;
-    private float attractChance = 1f / 5f * 3;
-    private float crossChance = 1f / 5f * 4;
-    private float grenadeChance = 1f / 5f * 5;
-    private float wallsChance = 1f / 6f;
+    private float gunChance = 1f / 4f;
+    private float attractChance = 1f / 4f * 2;
+    private float crossChance = 1f / 4f * 3;
+    private float grenadeChance = 1f / 4f * 4;
+    private float rainChance = .3f;
+    private float wallsChance = .6f;
 
     //telegraph variables
     public Transform rainTelegraphParent;
@@ -133,11 +134,7 @@ public class bossTwo : MonoBehaviour
                 timeSinceStart = 0;
                 if (bossHealth > 150)
                 {
-                    if (pattern < rainChance)
-                    {
-                        rainPattern();
-                    }
-                    else if (pattern < gunChance)
+                    if (pattern < gunChance)
                     {
                         gunPattern();
                     }
@@ -176,10 +173,6 @@ public class bossTwo : MonoBehaviour
                     {
                         crossPattern();
                     }
-                    else if (pattern < grenadeChance)
-                    {
-                        grenadePattern();
-                    }
                 }
                 choosePatternRange();
                 pattern = Random.Range(0.0f, 1.0f);
@@ -191,11 +184,7 @@ public class bossTwo : MonoBehaviour
         {
             if (bossHealth > 150)
             {
-                if (pattern < rainChance)
-                {
-                    rainTelegraph();
-                }
-                else if (pattern < gunChance)
+                if (pattern < gunChance)
                 {
                     gunTelegraph();
                 }
@@ -216,6 +205,22 @@ public class bossTwo : MonoBehaviour
             {
                 if (pattern < wallsChance)
                 {
+                    if (Random.Range(0f, 1f) < .5f && coolDown == 1)
+                    {
+                        wallsGenades = true;
+                    }
+                    else if(coolDown == 1)
+                    {
+                        wallsGenades = false;
+                    }
+                    if (wallsGenades)
+                    {
+                        grenadeTelegraph();
+                    }
+                    else
+                    {
+                        gunTelegraph();
+                    }
                     wallsTelegraph();
                 }
                 else if (pattern < rainChance)
@@ -233,10 +238,6 @@ public class bossTwo : MonoBehaviour
                 else if (pattern < crossChance)
                 {
                     crossTelegraph();
-                }
-                else if (pattern < grenadeChance)
-                {
-                    grenadeTelegraph();
                 }
             }
         }
@@ -558,6 +559,11 @@ public class bossTwo : MonoBehaviour
             gunParent.rotation = Quaternion.AngleAxis(Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg, Vector3.forward);
         }
 
+        if (!wallsActive)
+        {
+            gunSize = 1.5f;
+        }
+
         GameObject newBullet = Instantiate(followBullet, new Vector3(0, 2), gunParent.rotation, gunParent);
         newBullet.tag = "bossTwoAttack";
         newBullet.transform.localScale = new Vector3(1, gunSize);
@@ -668,7 +674,7 @@ public class bossTwo : MonoBehaviour
     {
         //kill rain on either side of the boss to restrict area and then do either grenade or gun pattern
         wallsActive = true;
-        if (Random.Range(0f, 1f) < .5f)
+        if (wallsGenades)
         {
             grenadePattern();
         }
@@ -842,20 +848,90 @@ public class bossTwo : MonoBehaviour
     {
         if (bossHealth > 150)
         {
-            rainChance = 1f / 5f;
-            gunChance = 1f / 5f * 2;
-            attractChance = 1f / 5f * 3;
-            crossChance = 1f / 5f * 4;
-            grenadeChance = 1f / 5f * 5;
+            //original values
+            //gunChance = 1f / 4f;
+            //attractChance = 1f / 4f * 2;
+            //crossChance = 1f / 4f * 3;
+            //grenadeChance = 1f / 4f * 4;
+
+            //left side of screen = cross
+            if (lizyTransform.position.y < -1 && lizyTransform.position.x < -2)
+            {
+                gunChance = 0;
+                attractChance = .1f;
+                crossChance = .9f;
+                grenadeChance = 1;
+            }
+            //middle of screen = attract
+            else if (lizyTransform.position.y < -1 && lizyTransform.position.x < 2)
+            {
+                gunChance = .1f;
+                attractChance = .8f;
+                crossChance = .9f;
+                grenadeChance = 1;
+            }
+            //right side of screen = grenade
+            else if (lizyTransform.position.y < -1 && lizyTransform.position.x >= 2)
+            {
+                gunChance = .1f;
+                attractChance = .2f;
+                crossChance = .3f;
+                grenadeChance = 1;
+            }
+            //in the air = gun
+            else
+            {
+                gunChance = .7f;
+                attractChance = .8f;
+                crossChance = .9f;
+                grenadeChance = 1;
+            }
         }
         else
         {
-            wallsChance = 1f / 6f;
-            rainChance = 1f / 6f * 2;
-            gunChance = 1f / 6f * 3;
-            attractChance = 1f / 6f * 4;
-            crossChance = 1f / 6f * 5;
-            grenadeChance = 1f / 6f * 6;
+            //original values
+            //wallsChance = .3f;
+            //rainChance = .6f;
+            //gunChance = .75f;
+            //attractChance = .9f;
+            //crossChance = 1;
+
+            //left side of screen = attract
+            if (lizyTransform.position.y < -1 && lizyTransform.position.x < -2)
+            {
+                wallsChance = .075f;
+                rainChance = .15f;
+                gunChance = .225f;
+                attractChance = .925f;
+                crossChance = 1;
+            }
+            //middle of screen = walls
+            else if (lizyTransform.position.y < -1 && lizyTransform.position.x < 2)
+            {
+                wallsChance = .7f;
+                rainChance = .775f;
+                gunChance = .85f;
+                attractChance = .925f;
+                crossChance = 1;
+            }
+            //right side of screen = gun
+            else if (lizyTransform.position.y < -1 && lizyTransform.position.x >= 2)
+            {
+                wallsChance = .075f;
+                rainChance = .15f;
+                gunChance = .85f;
+                attractChance = .925f;
+                crossChance = 1;
+            }
+            //in the air = rain
+            else
+            {
+                wallsChance = .075f;
+                rainChance = .775f;
+                gunChance = .85f;
+                attractChance = .925f;
+                crossChance = 1;
+            }
         }
     }
 
@@ -865,28 +941,9 @@ public class bossTwo : MonoBehaviour
         gameOverText.text = "You Win";
         gameOverText.color = new Color(1, 1, 1, 1);
         timeText.text = "your time was\n" + "from start of fight: ";
-        string minLevel = (Time.timeSinceLevelLoad / 60).ToString("F0");
-        string secLevel = (Time.timeSinceLevelLoad % 60).ToString("F2");
-        string minFull = (Time.time / 60).ToString("F0");
-        string secFull = (Time.time % 60).ToString("F2");
-        if (Time.timeSinceLevelLoad / 60 < 10)
-        {
-            minLevel = "0" + minLevel;
-        }
-        if (Time.timeSinceLevelLoad % 60 < 10)
-        {
-            secLevel = "0" + secLevel;
-        }
-        timeText.text += minLevel + ":" + secLevel + "\n from startup of game: ";
-        if (Time.time / 60 < 10)
-        {
-            minFull = "0" + minFull;
-        }
-        if (Time.time % 60 < 10)
-        {
-            secFull = "0" + secFull;
-        }
-        timeText.text += minFull + ":" + secFull;
+        timeText.text += Mathf.Floor(Time.timeSinceLevelLoad / 60).ToString("00") + ":" + (Time.timeSinceLevelLoad % 60).ToString("00") + (Time.timeSinceLevelLoad % 60).ToString("F2").Substring((Time.timeSinceLevelLoad % 60).ToString("F2").IndexOf("."), 3) + "\n from startup of game: ";
+        timeText.text += Mathf.Floor(Time.time / 60).ToString("00") + ":" + (Time.time % 60).ToString("00") + (Time.time % 60).ToString("F2").Substring((Time.time % 60).ToString("F2").IndexOf("."), 3);
+        timeText.text += "\n deaths: " + playerController.deaths;
         timeText.color = new Color(1, 1, 1, 1);
         bossBeaten = true;
     }

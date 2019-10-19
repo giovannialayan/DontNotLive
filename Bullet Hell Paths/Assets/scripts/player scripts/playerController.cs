@@ -231,13 +231,13 @@ public class playerController : MonoBehaviour
         //timer for attackspeed
         if (!canAttack)
         {
-            attackSpeedDisplay.text = timer.ToString("F2");
+            //attackSpeedDisplay.text = timer.ToString("F2");
             timer-= Time.deltaTime;
             if(timer <= 0)
             {
                 canAttack = true;
                 timer = attackSpeed;
-                attackSpeedDisplay.text = "0.00";
+                //attackSpeedDisplay.text = "0.00";
             }
         }
 
@@ -272,6 +272,8 @@ public class playerController : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
+        
+        attackSpeedDisplay.text = Mathf.Floor(Time.timeSinceLevelLoad / 60).ToString("00") + ":" + (Time.timeSinceLevelLoad % 60).ToString("00") + (Time.timeSinceLevelLoad % 60).ToString("F2").Substring((Time.timeSinceLevelLoad % 60).ToString("F2").IndexOf("."), 3);
     }
 
     //is an animation playing
