@@ -7,6 +7,7 @@ public class damageBosses : MonoBehaviour
 {
     public bossOne bossOne;
     public bossTwo bossTwo;
+    public bossThree bossThree;
 
     public void dealDamage(int damage)
     {
@@ -17,6 +18,10 @@ public class damageBosses : MonoBehaviour
         else if (SceneManager.GetActiveScene().name == "FrankBoss")
         {
             bossTwo.takeDamage(damage);
+        }
+        else if(SceneManager.GetActiveScene().name == "DominicBoss")
+        {
+            bossThree.takeDamage(damage);
         }
     }
 }

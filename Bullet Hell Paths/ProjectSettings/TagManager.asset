@@ -12,6 +12,7 @@ TagManager:
   - bullet
   - bossOneAttack
   - bossTwoAttack
+  - bossThreeAttack
   layers:
   - Default
   - TransparentFX

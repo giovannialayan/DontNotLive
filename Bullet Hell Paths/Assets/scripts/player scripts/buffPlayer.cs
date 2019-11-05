@@ -11,13 +11,14 @@ public class buffPlayer : MonoBehaviour
     {
         if(SceneManager.GetActiveScene().name == "FrankBoss")
         {
-            afterBossOne();
+            lizy.attackDamage = 10;
+            lizy.activateUpAttack = true;
         }
-    }
-
-    public void afterBossOne()
-    {
-        lizy.attackDamage = 10;
-        lizy.activateUpAttack = true;
+        else if (SceneManager.GetActiveScene().name == "DominicBoss")
+        {
+            lizy.attackDamage = 30;
+            lizy.activateUpAttack = true;
+            //lizy.activateDoubleJump = true;
+        }
     }
 }

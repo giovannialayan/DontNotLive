@@ -34,6 +34,7 @@ public class playerController : MonoBehaviour
     public float jumpSpeed = 8;
     public float fallMultiplier = 2;
     public float lowJumpMultiplier = 2.5f;
+    public bool jumpedTwice = false;
 
     //player stats
     public int health = 0;
@@ -54,6 +55,7 @@ public class playerController : MonoBehaviour
 
     //aggressive variables
     public bool activateUpAttack = false;
+    public bool activateDoubleJump = false;
     
     void Start()
     {
@@ -149,8 +151,28 @@ public class playerController : MonoBehaviour
                     spriteRenderer.flipX = true;
                 }
             }
-            
         }
+
+        if (activateDoubleJump && isGrounded)
+        {
+            jumpedTwice = false;
+        }
+
+        //double jump
+        if(activateDoubleJump && Input.GetKeyDown("space") && !isGrounded && !jumpedTwice)
+        {
+            rigid.velocity = new Vector2(rigid.velocity.x, jumpSpeed);
+            jumpedTwice = true;
+            if ((!isPlaying("lizy attack jump") && !isPlaying("lizy attack up jump")) && rigid.velocity.y >= 0)
+            {
+                animator.Play("lizy jump");
+                if (facingLeft)
+                {
+                    spriteRenderer.flipX = true;
+                }
+            }
+        }
+
         //fast fall
         if (Input.GetKeyDown("s") && !isGrounded)
         {
