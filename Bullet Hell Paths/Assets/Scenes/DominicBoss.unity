@@ -590,6 +590,7 @@ GameObject:
   m_Component:
   - component: {fileID: 762124670}
   - component: {fileID: 762124669}
+  - component: {fileID: 762124671}
   m_Layer: 0
   m_Name: FireMage
   m_TagString: Untagged
@@ -661,6 +662,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &762124671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762124668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e627ac8027a08904ab79690781929570, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lizyTransform: {fileID: 1453511736}
+  healthBar: {fileID: 1598464535}
+  healthText: {fileID: 1538376930}
+  floorFire: {fileID: 4314821629914651240, guid: 48ad7c346648c654cae61ae2b6f03649,
+    type: 3}
+  shotgunParent: {fileID: 0}
+  gameOverScreen: {fileID: 897039320}
+  gameOverText: {fileID: 769174433}
+  timeText: {fileID: 1941843767}
+  lizy: {fileID: 1453511735}
 --- !u!1 &769174431
 GameObject:
   m_ObjectHideFlags: 0
@@ -1647,7 +1670,7 @@ MonoBehaviour:
   canTakeDamage: 1
   damageBoostTimer: 0
   full: 1
-  playerHealth: {fileID: 1538376929}
+  playerHealth: {fileID: 2108015560}
   gameOverScreen: {fileID: 897039320}
   gameOverText: {fileID: 769174433}
   restartText: {fileID: 1941843767}

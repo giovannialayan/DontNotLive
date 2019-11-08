@@ -161,7 +161,7 @@ public class playerController : MonoBehaviour
         //double jump
         if(activateDoubleJump && Input.GetKeyDown("space") && !isGrounded && !jumpedTwice)
         {
-            rigid.velocity = new Vector2(rigid.velocity.x, jumpSpeed);
+            rigid.velocity = new Vector2(rigid.velocity.x, jumpSpeed * .8f);
             jumpedTwice = true;
             if ((!isPlaying("lizy attack jump") && !isPlaying("lizy attack up jump")) && rigid.velocity.y >= 0)
             {
@@ -334,6 +334,7 @@ public class playerController : MonoBehaviour
         }
     }
 
+    //draw attack hitboxes in scene view
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
