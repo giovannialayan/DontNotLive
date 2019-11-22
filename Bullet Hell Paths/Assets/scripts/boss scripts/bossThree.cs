@@ -45,12 +45,18 @@ public class bossThree : MonoBehaviour
     private float flameThrowerSpeed = 30;
     private bool goingLeft = true;
 
+    //rising fireball variables
+    private List<GameObject> risingFireBalls = new List<GameObject>();
+    private float risingSpeed = 5;
+    private float risingFireBallX = 0;
+
     //pattern variables
     private float timeSinceStart = 0;
     private bool isFloorPattern = false;
     private bool isShotgunPattern = false;
     private bool isEngulfPattern = false;
     private bool isFlameThrowerPattern = false;
+    private bool isRisingFireBallPattern = false;
 
     //win variables
     public Image gameOverScreen;
@@ -71,25 +77,30 @@ public class bossThree : MonoBehaviour
             isInvincible = false;
         }
 
-        if (Input.GetKeyDown("1") && !isFloorPattern && !isShotgunPattern && !isEngulfPattern && !isFlameThrowerPattern)
+        if (Input.GetKeyDown("1") && !isFloorPattern && !isShotgunPattern && !isEngulfPattern && !isFlameThrowerPattern && !isRisingFireBallPattern)
         {
             timeSinceStart = 0;
             floorFirePattern();
         }
-        if (Input.GetKeyDown("2") && !isFloorPattern && !isShotgunPattern && !isEngulfPattern && !isFlameThrowerPattern)
+        if (Input.GetKeyDown("2") && !isFloorPattern && !isShotgunPattern && !isEngulfPattern && !isFlameThrowerPattern && !isRisingFireBallPattern)
         {
             timeSinceStart = 0;
             shotgunFirePattern();
         }
-        if (Input.GetKeyDown("3") && !isFloorPattern && !isShotgunPattern && !isEngulfPattern && !isFlameThrowerPattern)
+        if (Input.GetKeyDown("3") && !isFloorPattern && !isShotgunPattern && !isEngulfPattern && !isFlameThrowerPattern && !isRisingFireBallPattern)
         {
             timeSinceStart = 0;
             engulfPattern();
         }
-        if (Input.GetKeyDown("4") && !isFloorPattern && !isShotgunPattern && !isEngulfPattern && !isFlameThrowerPattern)
+        if (Input.GetKeyDown("4") && !isFloorPattern && !isShotgunPattern && !isEngulfPattern && !isFlameThrowerPattern && !isRisingFireBallPattern)
         {
             timeSinceStart = 0;
             dualFlamehtrowerPattern();
+        }
+        if(Input.GetKeyDown("5") && !isFloorPattern && !isShotgunPattern && !isEngulfPattern && !isFlameThrowerPattern && !isRisingFireBallPattern)
+        {
+            timeSinceStart = 0;
+            risingFireBallPattern();
         }
 
         //floor pattern
@@ -210,6 +221,49 @@ public class bossThree : MonoBehaviour
             }
         }
 
+        //fireballs rising from the floor pattern
+        if (isRisingFireBallPattern)
+        {
+            //move all fire balls upwards
+            foreach (GameObject newFireBall in risingFireBalls)
+            {
+                Vector3 fireBallPos = newFireBall.transform.position;
+                newFireBall.transform.position = Vector3.MoveTowards(newFireBall.transform.position, new Vector3(fireBallPos.x, 20), risingSpeed * Time.fixedDeltaTime);
+            }
+
+            //spawn new fireballs either 1 unit to the left or right of the last one
+            if (isGoodTime(1, 10))
+            {
+                //if (lizyTransform.position.x < risingFireBallX)
+                //{
+                //    risingFireBallX -= 2;
+                //}
+                //else
+                //{
+                //    risingFireBallX += 2;
+                //}
+                //if (risingFireBallX > 8)
+                //{
+                //    risingFireBallX = 7;
+                //}
+                //else if (risingFireBallX < -8)
+                //{
+                //    risingFireBallX = -7;
+                //}
+                risingFireBallX = lizyTransform.position.x;
+                risingFireBallPattern();
+            }
+
+            if (risingFireBalls[risingFireBalls.Count-1].transform.position.y >= 15)
+            {
+                risingFireBallX = 0;
+                destroyAttack();
+                isRisingFireBallPattern = false;
+            }
+
+            timeSinceStart += Time.fixedDeltaTime;
+        }
+
         //make lizy invincible after you win
         if (bossBeaten)
         {
@@ -252,7 +306,16 @@ public class bossThree : MonoBehaviour
     //rising fireballs pattern
     private void risingFireBallPattern()
     {
-
+        GameObject newFireBall = Instantiate(fireBall, new Vector3(risingFireBallX, -7), Quaternion.identity);
+        newFireBall.tag = "bossThreeAttack";
+        risingFireBalls.Add(newFireBall);
+        newFireBall = Instantiate(fireBall, new Vector3(risingFireBallX - 1.5f, -7), Quaternion.identity);
+        newFireBall.tag = "bossThreeAttack";
+        risingFireBalls.Add(newFireBall);
+        newFireBall = Instantiate(fireBall, new Vector3(risingFireBallX + 1.5f, -7), Quaternion.identity);
+        newFireBall.tag = "bossThreeAttack";
+        risingFireBalls.Add(newFireBall);
+        isRisingFireBallPattern = true;
     }
 
     //double flamethrower pattern
@@ -287,6 +350,7 @@ public class bossThree : MonoBehaviour
         healthText.text = health.ToString();
     }
 
+    //destroy all attacks in the scene
     private void destroyAttack()
     {
         GameObject[] bossThreeAttacks = GameObject.FindGameObjectsWithTag("bossThreeAttack");
@@ -294,6 +358,20 @@ public class bossThree : MonoBehaviour
         {
             Destroy(attack);
         }
+    }
+
+    //check if the current timeSinceStart is an iteration of x sec
+    private bool isGoodTime(float x, int iterations)
+    {
+        for (int i = 1; i <= iterations; i++)
+        {
+            if (timeSinceStart >= x * i - .01 && timeSinceStart <= x * i + .01)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     //player winning

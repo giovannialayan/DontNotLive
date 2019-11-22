@@ -686,7 +686,7 @@ public class bossTwo : MonoBehaviour
         isWallsPattern = true;
     }
 
-    //check of the current timeSinceStart is an iteration of x sec
+    //check if the current timeSinceStart is an iteration of x sec
     private bool isGoodTime(float x, int iterations)
     {
         for (int i = 1; i <= iterations; i++)

@@ -573,7 +573,7 @@ public class bossOne : MonoBehaviour
         boulderTelegraph.color = new Color(1, .4f, .985f, 0);
     }
 
-    //check of the current timeSinceStart is an iteration of x sec
+    //check if the current timeSinceStart is an iteration of x sec
     private bool isGoodTime(float x)
     {
         if ((timeSinceStart >= x - .01 && timeSinceStart <= x + .01) || timeSinceStart == 1.5)
