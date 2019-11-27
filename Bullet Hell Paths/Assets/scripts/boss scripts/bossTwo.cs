@@ -110,7 +110,7 @@ public class bossTwo : MonoBehaviour
     {
         bossSprite = GetComponent<SpriteRenderer>();
         grenadePos = Random.Range(-9, 10);
-        pattern = Random.Range(0f,1f);
+        pattern = Random.Range(0f, 1f);
     }
 
     void FixedUpdate()

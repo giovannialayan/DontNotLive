@@ -14,4 +14,9 @@ public class levelSelect : MonoBehaviour
     {
         SceneManager.LoadScene("FrankBoss");
     }
+
+    public void goToDominic()
+    {
+        SceneManager.LoadScene("DominicBoss");
+    }
 }

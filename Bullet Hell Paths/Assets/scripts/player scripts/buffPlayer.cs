@@ -16,7 +16,7 @@ public class buffPlayer : MonoBehaviour
         }
         else if (SceneManager.GetActiveScene().name == "DominicBoss")
         {
-            lizy.attackDamage = 30;
+            lizy.attackDamage = 20;
             lizy.maxHealth = 3;
             lizy.activateUpAttack = true;
             lizy.activateDoubleJump = true;

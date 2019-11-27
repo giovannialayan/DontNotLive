@@ -294,7 +294,13 @@ public class playerController : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
-        
+
+        //quit to main menu
+        if (Input.GetKeyDown("escape"))
+        {
+            SceneManager.LoadScene("LevelSelect");
+        }
+
         attackSpeedDisplay.text = Mathf.Floor(Time.timeSinceLevelLoad / 60).ToString("00") + ":" + (Time.timeSinceLevelLoad % 60).ToString("00") + (Time.timeSinceLevelLoad % 60).ToString("F2").Substring((Time.timeSinceLevelLoad % 60).ToString("F2").IndexOf("."), 3);
     }
 

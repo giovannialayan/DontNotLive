@@ -28,6 +28,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: flameThrower Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 5055482211541885725, guid: 08936aade9925b04abaa72ae828362e9,
+        type: 3}
+      propertyPath: m_TagString
+      value: bossThreeAttack
+      objectReference: {fileID: 0}
     - target: {fileID: 4580858534583444448, guid: 08936aade9925b04abaa72ae828362e9,
         type: 3}
       propertyPath: m_LocalPosition.x

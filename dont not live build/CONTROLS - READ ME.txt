@@ -1,16 +1,18 @@
 --------
 CONTROLS
 --------
-A - strafe left
-D - strafe right
+A - move left
+D - move right
 Space - jump
 S - fast fall
 Left Click - attack
 left, right & up arrow keys - attack
 R - restart
+Esc - exit to level select
 Alt + F4 - quit
 
 -------
 UNLOCKS
 -------
 on any boss after Bruno you can attack upward
+on any boss after Frank you can double jump
