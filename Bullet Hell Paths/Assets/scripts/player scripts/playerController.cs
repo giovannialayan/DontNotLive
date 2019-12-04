@@ -319,7 +319,6 @@ public class playerController : MonoBehaviour
             for (int i = 0; i < enemyToDamage.Length; i++)
             {
                 damageBosses.dealDamage(attackDamage);
-                //enemyToDamage[i].GetComponent<bossOne>().takeDamage(attackDamage);
             }
         }
         else if (!facingLeft)
@@ -327,7 +326,7 @@ public class playerController : MonoBehaviour
             Collider2D[] enemyToDamage = Physics2D.OverlapCircleAll(new Vector3(attackPos.position.x + .425f, attackPos.position.y), attackRange, enemies);
             for (int i = 0; i < enemyToDamage.Length; i++)
             {
-                enemyToDamage[i].GetComponent<bossOne>().takeDamage(attackDamage);
+                damageBosses.dealDamage(attackDamage);
             }
         }
         else
@@ -335,7 +334,7 @@ public class playerController : MonoBehaviour
             Collider2D[] enemyToDamage = Physics2D.OverlapCircleAll(new Vector3(attackPos.position.x - .425f, attackPos.position.y), attackRange, enemies);
             for (int i = 0; i < enemyToDamage.Length; i++)
             {
-                enemyToDamage[i].GetComponent<bossOne>().takeDamage(attackDamage);
+                damageBosses.dealDamage(attackDamage);
             }
         }
     }

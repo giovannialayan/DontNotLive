@@ -43,7 +43,7 @@ public class bossThree : MonoBehaviour
     public GameObject flameThrower;
     public Transform flameThrowerParentLeft;
     public Transform flameThrowerParentRight;
-    private float flameThrowerSpeed = 30;
+    private float flameThrowerSpeed = 40;
     private bool goingLeft = true;
 
     //rising fireball variables
@@ -84,21 +84,21 @@ public class bossThree : MonoBehaviour
     private bool isFireSwordPattern = false;
     private bool isMeteorPattern = false;
     private float pattern;
-    private float floorFireChance = 1f / 8f;
-    private float shotgunChance = 2f / 8f;
-    private float engulfChance = 3f / 8f;
-    private float risingFireChance = 4f / 8f;
-    private float flamethrowerChance = 5f / 8f;
-    private float geyserChance = 6f / 8f;
-    private float swordChance = 7f / 8f;
-    private float meteorChance = 1;
+    private float floorFireChance = 1f / 6f;
+    private float shotgunChance = 2f / 6f;
+    private float engulfChance = 3f / 6f;
+    private float flamethrowerChance = 4f / 6f;
+    private float swordChance = 5f / 6f;
+    private float geyserChance = 6f / 6f;
+    private float risingFireChance = 0;
+    private float meteorChance = 0;
 
     //telegraph variables
     public SpriteRenderer floorFireTelegraphSprite;
     public SpriteRenderer shotgunTelegraphSprite;
     public SpriteRenderer engulfTelegraphSprite;
     public GameObject risingFireTelegraphObj;
-    public SpriteRenderer flamethrowerTelegraphSprite;
+    public GameObject flamethrowerTelegraphObj;
     public GameObject geyserTelegraphParent;
     public GameObject swordTelegraphObj;
     public GameObject meteorTelegraphObj;
@@ -150,21 +150,21 @@ public class bossThree : MonoBehaviour
                 {
                     engulfPattern();
                 }
-                else if (pattern < risingFireChance)
-                {
-                    risingFireBallPattern();
-                }
                 else if (pattern < flamethrowerChance)
                 {
                     dualFlamehtrowerPattern();
+                }
+                else if (pattern < swordChance)
+                {
+                    fireSwordPattern(swordSequence, swordIteration);
                 }
                 else if (pattern < geyserChance)
                 {
                     flameGeyserPattern(numGeysers);
                 }
-                else if (pattern < swordChance)
+                else if (pattern < risingFireChance)
                 {
-                    fireSwordPattern(swordSequence, swordIteration);
+                    risingFireBallPattern();
                 }
                 else if (pattern < meteorChance)
                 {
@@ -190,21 +190,21 @@ public class bossThree : MonoBehaviour
             {
                 engulfTelegraph();
             }
-            else if (pattern < risingFireChance)
-            {
-                risingFireBallTelegraph();
-            }
             else if (pattern < flamethrowerChance)
             {
                 dualFlamethrowerTelegraph();
+            }
+            else if (pattern < swordChance)
+            {
+                fireSwordTelegraph();
             }
             else if (pattern < geyserChance)
             {
                 flameGeyserTelegraph();
             }
-            else if (pattern < swordChance)
+            else if (pattern < risingFireChance)
             {
-                fireSwordTelegraph();
+                risingFireBallTelegraph();
             }
             else if (pattern < meteorChance)
             {
@@ -342,22 +342,14 @@ public class bossThree : MonoBehaviour
 
         //flamethrower pattern
         if (isFlameThrowerPattern)
-        {   
-            if ((flameThrowerParentLeft.eulerAngles.z == 0 || flameThrowerParentLeft.eulerAngles.z > 315) && goingLeft)
+        {
+            if (!goingLeft)
             {
-                flameThrowerParentLeft.rotation = Quaternion.RotateTowards(flameThrowerParentLeft.rotation, Quaternion.Euler(0, 0, -45), flameThrowerSpeed * Time.fixedDeltaTime);
-                flameThrowerParentRight.rotation = Quaternion.RotateTowards(flameThrowerParentRight.rotation, Quaternion.Euler(0, 0, -45), flameThrowerSpeed * Time.fixedDeltaTime);
-            }
-            else
-            {
-                goingLeft = false;
-                flameThrowerSpeed = 40;
                 flameThrowerParentLeft.rotation = Quaternion.RotateTowards(flameThrowerParentLeft.rotation, Quaternion.Euler(0, 0, 70), flameThrowerSpeed * Time.fixedDeltaTime);
                 flameThrowerParentRight.rotation = Quaternion.RotateTowards(flameThrowerParentRight.rotation, Quaternion.Euler(0, 0, 70), flameThrowerSpeed * Time.fixedDeltaTime);
                 if (flameThrowerParentRight.eulerAngles.z >= 50 && flameThrowerParentRight.eulerAngles.z < 70 && timeSinceStart == 0)
                 {
                     Destroy(flameThrowerParentRight.GetChild(0).gameObject);
-                    goingLeft = true;
                     timeSinceStart += Time.fixedDeltaTime;
                 }
                 else if (timeSinceStart > 0)
@@ -365,7 +357,48 @@ public class bossThree : MonoBehaviour
                     timeSinceStart += Time.fixedDeltaTime;
                 }
             }
-            if(timeSinceStart >= 1)
+            else
+            {
+                flameThrowerParentLeft.rotation = Quaternion.RotateTowards(flameThrowerParentLeft.rotation, Quaternion.Euler(0, 0, -70), flameThrowerSpeed * Time.fixedDeltaTime);
+                flameThrowerParentRight.rotation = Quaternion.RotateTowards(flameThrowerParentRight.rotation, Quaternion.Euler(0, 0, -70), flameThrowerSpeed * Time.fixedDeltaTime);
+                if (flameThrowerParentLeft.eulerAngles.z <= 310 && flameThrowerParentLeft.eulerAngles.z > 290 && timeSinceStart == 0)
+                {
+                    Destroy(flameThrowerParentLeft.GetChild(0).gameObject);
+                    timeSinceStart += Time.fixedDeltaTime;
+                }
+                else if (timeSinceStart > 0)
+                {
+                    timeSinceStart += Time.fixedDeltaTime;
+                }
+            }
+
+            //OLD CODE THAT DOESNT ACCOUNT FOR WHICH SIDE OF THE SCREEN THE PLAYER IS ON
+            {
+                //if ((flameThrowerParentLeft.eulerAngles.z == 0 || flameThrowerParentLeft.eulerAngles.z > 315) && goingLeft)
+                //{
+                //    flameThrowerParentLeft.rotation = Quaternion.RotateTowards(flameThrowerParentLeft.rotation, Quaternion.Euler(0, 0, -45), flameThrowerSpeed * Time.fixedDeltaTime);
+                //    flameThrowerParentRight.rotation = Quaternion.RotateTowards(flameThrowerParentRight.rotation, Quaternion.Euler(0, 0, -45), flameThrowerSpeed * Time.fixedDeltaTime);
+                //}
+                //else
+                //{
+                //    goingLeft = false;
+                //    flameThrowerSpeed = 40;
+                //    flameThrowerParentLeft.rotation = Quaternion.RotateTowards(flameThrowerParentLeft.rotation, Quaternion.Euler(0, 0, 70), flameThrowerSpeed * Time.fixedDeltaTime);
+                //    flameThrowerParentRight.rotation = Quaternion.RotateTowards(flameThrowerParentRight.rotation, Quaternion.Euler(0, 0, 70), flameThrowerSpeed * Time.fixedDeltaTime);
+                //    if (flameThrowerParentRight.eulerAngles.z >= 50 && flameThrowerParentRight.eulerAngles.z < 70 && timeSinceStart == 0)
+                //    {
+                //        Destroy(flameThrowerParentRight.GetChild(0).gameObject);
+                //        goingLeft = true;
+                //        timeSinceStart += Time.fixedDeltaTime;
+                //    }
+                //    else if (timeSinceStart > 0)
+                //    {
+                //        timeSinceStart += Time.fixedDeltaTime;
+                //    }
+                //}
+            }
+
+            if (timeSinceStart >= 1)
             {
                 destroyAttack();
                 flameThrowerParentLeft.eulerAngles = new Vector3(0, 0, 0);
@@ -591,6 +624,22 @@ public class bossThree : MonoBehaviour
     {
         GameObject newFlameThrowerLeft = Instantiate(flameThrower, new Vector3(-4, -6f), flameThrowerParentLeft.rotation, flameThrowerParentLeft);
         GameObject newFlameThrowerRight = Instantiate(flameThrower, new Vector3(4, -6f), flameThrowerParentRight.rotation, flameThrowerParentRight);
+        if (flamethrowerTelegraphObj.transform.position.x == -3)
+        {
+            flameThrowerParentLeft.rotation = Quaternion.Euler(0, 0, -45);
+            flameThrowerParentRight.rotation = Quaternion.Euler(0, 0, -45);
+        }
+        else if (flamethrowerTelegraphObj.transform.position.x == 3)
+        {
+            flameThrowerParentLeft.rotation = Quaternion.Euler(0, 0, 45);
+            flameThrowerParentRight.rotation = Quaternion.Euler(0, 0, 45);
+        }
+        else
+        {
+            flameThrowerParentLeft.rotation = Quaternion.Euler(0, 0, 0);
+            flameThrowerParentRight.rotation = Quaternion.Euler(0, 0, 0);
+        }
+
         isFlameThrowerPattern = true;
     }
 
@@ -746,7 +795,26 @@ public class bossThree : MonoBehaviour
     //double flamethrower telegraph
     private void dualFlamethrowerTelegraph()
     {
-        Color c = flamethrowerTelegraphSprite.color;
+        if (lizyTransform.position.x > 3)
+        {
+            flamethrowerTelegraphObj.transform.rotation = Quaternion.Euler(0, 0, 45);
+            flamethrowerTelegraphObj.transform.position = new Vector3(3, -4);
+            goingLeft = true;
+        }
+        else if(lizyTransform.position.x < -3)
+        {
+            flamethrowerTelegraphObj.transform.rotation = Quaternion.Euler(0, 0, -45);
+            flamethrowerTelegraphObj.transform.position = new Vector3(-3, -4);
+            goingLeft = false;
+        }
+        else
+        {
+            flamethrowerTelegraphObj.transform.rotation = Quaternion.Euler(0, 0, 0);
+            flamethrowerTelegraphObj.transform.position = new Vector3(0, -4);
+            goingLeft = false;
+        }
+
+        Color c = flamethrowerTelegraphObj.GetComponent<SpriteRenderer>().color;
         if (c.a > 0)
         {
             c.a = coolDown;
@@ -755,7 +823,7 @@ public class bossThree : MonoBehaviour
         {
             c.a = 1;
         }
-        flamethrowerTelegraphSprite.color = c;
+        flamethrowerTelegraphObj.GetComponent<SpriteRenderer>().color = c;
     }
     
     //fire geysers telegraph
@@ -782,7 +850,15 @@ public class bossThree : MonoBehaviour
     {
         if(coolDown > .98f)
         {
-            swordSequence = Random.Range(1, 4);
+            if (lizyTransform.position.x > 0)
+            {
+                swordSequence = Random.Range(0, 2);
+            }
+            else
+            {
+                swordSequence = Random.Range(1, 3);
+            }
+            
             if (swordSequence == 1)
             {
                 swordTelegraphObj.transform.position = new Vector3(0, 6);
@@ -839,12 +915,13 @@ public class bossThree : MonoBehaviour
         shotgunTelegraphSprite.color = c;
         engulfTelegraphSprite.color = c;
         risingFireTelegraphObj.GetComponent<SpriteRenderer>().color = c;
-        flamethrowerTelegraphSprite.color = c;
+        flamethrowerTelegraphObj.GetComponent<SpriteRenderer>().color = c;
         foreach (SpriteRenderer geyser in geyserTelegraphParent.GetComponentsInChildren<SpriteRenderer>())
         {
             geyser.color = c;
         }
         swordTelegraphObj.GetComponent<SpriteRenderer>().color = c;
+        swordTelegraphObj.transform.rotation = Quaternion.identity;
         meteorTelegraphObj.GetComponent<SpriteRenderer>().color = c;
     }
 
@@ -852,7 +929,80 @@ public class bossThree : MonoBehaviour
     //decide which patterns have a higher chance of occuring
     private void choosePatternRange()
     {
-
+        //phase 1
+        if (bossHealth > maxHealth / 2)
+        {
+            //left side of screen (shotgun + geyser)
+            if (lizyTransform.position.x < -3)
+            {
+                floorFireChance = .05f;    // 5%
+                shotgunChance = .45f;      // 40%
+                engulfChance = .5f;        // 5%
+                flamethrowerChance = .55f; // 5%
+                swordChance = .6f;         // 5%
+                geyserChance = 1;          // 40%
+            }
+            //right side of screen (flamethrower + sword)
+            else if (lizyTransform.position.x > 3)
+            {
+                floorFireChance = .05f;    // 5%
+                shotgunChance = .1f;       // 5%
+                engulfChance = .15f;       // 5%
+                flamethrowerChance = .55f; // 40%
+                swordChance = .95f;        // 40%
+                geyserChance = 1;          // 5%
+            }
+            //middle of screen (floor + engulf)
+            else
+            {
+                floorFireChance = .4f;    // 40%
+                shotgunChance = .45f;     // 5%
+                engulfChance = .85f;      // 40%
+                flamethrowerChance = .9f; // 5%
+                swordChance = .95f;       // 5%
+                geyserChance = 1;         // 5%
+            }
+        }
+        //phase 2
+        else
+        {
+            //left side of screen (shotgun + geyser)
+            if (lizyTransform.position.x < -3)
+            {
+                floorFireChance = .025f;    // 2.5%
+                shotgunChance = .275f;      // 25%
+                engulfChance = .3f;         // 2.5%
+                flamethrowerChance = .325f; // 2.5%
+                swordChance = .35f;         // 2.5%
+                geyserChance = .6f;         // 25%
+                risingFireChance = 75f;     // 15%
+                meteorChance = 1;           // 15%
+            }
+            //right side of screen (flamethrower + sword)
+            else if (lizyTransform.position.x > 3)
+            {
+                floorFireChance = .025f;    // 2.5%
+                shotgunChance = .05f;       // 2.5%
+                engulfChance = .075f;       // 2.5%
+                flamethrowerChance = .325f; // 25%
+                swordChance = .575f;        // 25%
+                geyserChance = .6f;         // 2.5%
+                risingFireChance = .75f;    // 15%
+                meteorChance = 1;           // 15%
+            }
+            //middle of screen (floor + engulf)
+            else
+            {
+                floorFireChance = .25f;    // 25%
+                shotgunChance = .275f;     // 2.5%
+                engulfChance = .525f;      // 25%
+                flamethrowerChance = .55f; // 2.5%
+                swordChance = .575f;       // 2.5%
+                geyserChance = .6f;        // 2.5%
+                risingFireChance = .75f;   // 15%
+                meteorChance = 1;          // 15%
+            }
+        }
     }
 
     //reduce boss health when hit and trigger boss death when health reaches 0

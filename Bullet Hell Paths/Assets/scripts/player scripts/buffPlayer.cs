@@ -21,5 +21,15 @@ public class buffPlayer : MonoBehaviour
             lizy.activateUpAttack = true;
             lizy.activateDoubleJump = true;
         }
+        /*
+         * what the fuck do i give the player after they beat dom?
+        else if ()
+        {
+            lizy.attackDamage = 30;
+            lizy.maxHealth = 3;
+            lizy.activateUpAttack = true;
+            lizy.activateDoubleJump = true;
+        }
+        */
     }
 }
