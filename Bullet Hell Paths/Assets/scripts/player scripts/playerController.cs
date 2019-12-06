@@ -56,6 +56,7 @@ public class playerController : MonoBehaviour
     //aggressive variables
     public bool activateUpAttack = false;
     public bool activateDoubleJump = false;
+    public bool activateParry = false;
     
     void Start()
     {

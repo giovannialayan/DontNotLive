@@ -382,6 +382,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bossOne: {fileID: 1253456667}
   bossTwo: {fileID: 0}
+  bossThree: {fileID: 0}
 --- !u!1 &302407285
 GameObject:
   m_ObjectHideFlags: 0
@@ -2672,7 +2673,7 @@ MonoBehaviour:
   attackDamage: 5
   attackPos: {fileID: 1184849339}
   attackSpeedDisplay: {fileID: 1748879121}
-  damageBosses: {fileID: 0}
+  damageBosses: {fileID: 234239528}
   enemies:
     serializedVersion: 2
     m_Bits: 512
@@ -2680,6 +2681,7 @@ MonoBehaviour:
   jumpSpeed: 14
   fallMultiplier: 3
   lowJumpMultiplier: 4.5
+  jumpedTwice: 0
   health: 0
   maxHealth: 4
   canTakeDamage: 1
@@ -2690,6 +2692,8 @@ MonoBehaviour:
   gameOverText: {fileID: 302407287}
   restartText: {fileID: 1118881556}
   activateUpAttack: 0
+  activateDoubleJump: 0
+  activateParry: 0
 --- !u!60 &1871605955
 PolygonCollider2D:
   m_ObjectHideFlags: 0
